@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
@@ -14,39 +14,33 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model User {
-    id     Int     @id @default(autoincrement())
-    userName   String
-}
-
 model Employees {
-    id              String          @id @default(cuid())
+    id              Int     @id @default(autoincrement())
     firstName       String
-    LastName        String
+    lastName        String
     telephoneNumber String
     emailAddress    String
-    employeeManager Int
+    password        String
+    status          Boolean
+    Manager         String
+    role            String
+    departmentName  String
+}
+
+model Manager {
+    id        Int    @id @default(autoincrement())
+    firstName String
+    lastName  String
+}
+
+model ManagerEmployee {
+    id         Int @id @default(autoincrement())
+    managerId  Int
+    EmployeeId Int
 }
 
 model Departments {
-    id          String     @id @default(cuid())
-    name        String     @unique
-    Status      Boolean
-    employeesId String?
-}
-
-model Status {
     id     Int     @id @default(autoincrement())
-    Active Boolean
-}
-
-model Authenticator {
-    credentialID         String  @unique
-    employeeId           String
-    providerAccountId    String
-    credentialPublicKey  String
-    counter              Int
-    credentialDeviceType String
-    credentialBackedUp   Boolean
-    transports           String?
+    name   String  @unique
+    status Boolean
 }
