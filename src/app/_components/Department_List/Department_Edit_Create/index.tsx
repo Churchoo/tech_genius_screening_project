@@ -13,6 +13,26 @@ interface Employee {
     role: string
 }
 
+interface Departments {
+    id: number,
+    name: string,
+    status: boolean
+}
+
+interface DepartmentsTable {
+    id: number,
+    name: string,
+    status: boolean,
+    manager: Manager
+}
+
+interface EditDepartments {
+    id: number,
+    name: string,
+    status: boolean,
+    managerId: number
+}
+
 interface CreateEmployee {
     firstName: string,
     lastName: string,
@@ -22,28 +42,50 @@ interface CreateEmployee {
     role: string
 }
 
-interface Props {
-    employeeData: Employee,
-    edit: boolean,
-    cancel(): void
+interface Manager {
+    id: number,
+    managerName: string,
+    emailAddress: string
 }
-const Employee_Edit_Create = (props: Props) => {
-    const StatusOptions = ["Active", 'Inactive']
-    const Department = ['A', 'B', 'C', 'D']
-    const [firstName, setFirstName] = useState(props.employeeData.firstName)
-    const [lastName, setLastName] = useState(props.employeeData.lastName)
-    const [telephoneNumber, setTelephoneNumber] = useState(props.employeeData.telephoneNumber)
-    const [emailAddress, setEmailAddress] = useState(props.employeeData.emailAddress)
-    const [manager, setManager] = useState(props.employeeData.emailAddress)
-    const [status, setStatus] = useState(props.employeeData.status)
-    const updateEmployee = api.update.updateEmployees.useMutation()
-    const createEmployee = api.insert.insertEmployees.useMutation()
 
-    const EditEmployeeDetails = (data: Employee) => {
-        updateEmployee.mutate(data)
+interface createDepartment {
+    name: string,
+    status: boolean,
+    managerId: number
+}
+
+interface Props {
+    DepartmentData: DepartmentsTable,
+    manager: Manager[],
+    edit: boolean,
+    exit(): void
+}
+const Department_Edit_Create = (props: Props) => {
+    const StatusOptions = ["Active", 'Inactive']
+    const [departmentName, setDepartmentName] = useState(props.DepartmentData.name)
+    const [manager, setManager] = useState<Manager>(props.DepartmentData.manager)
+    const [status, setStatus] = useState(props.DepartmentData.status)
+    const getStatusValue = () => {
+        if (status)
+            return "Active"
+        return "Inactive"
     }
-    const CreateEmployee = (data: CreateEmployee) => {
-        createEmployee.mutate(data)
+    const updateDepartment = api.update.updateDepartment.useMutation()
+    const createDepartment = api.insert.insertDepartment.useMutation()
+    const createDepartmentManagerLink = api.insert.insertManagerDepartmentLink.useMutation()
+    const ManagerEdit = api.update.updateManager.useMutation()
+    const updateDepartmentManagerLink = api.update.updateDepartmentManagerLink.useMutation()
+    const EditDepartmentDetails = (data: EditDepartments) => {
+        updateDepartment.mutate({ id: data.id, name: data.name, status: data.status })
+        updateDepartmentManagerLink.mutate({ departmentId: data.id, managerId: data.managerId })
+    }
+    const CreateDepartment = (data: createDepartment) => {
+        createDepartment.mutate({ name: data.name, status: data.status })
+        const newDepartment = createDepartment.data
+        console.log(newDepartment)
+        if (newDepartment && newDepartment !== null) {
+            createDepartmentManagerLink.mutate({ managerId: data.managerId, departmentId: newDepartment.id })
+        }
     }
     return (
         <div>
@@ -73,37 +115,31 @@ const Employee_Edit_Create = (props: Props) => {
                     </Grid2>
                     <Grid2 xs='auto' >
                         <Typography sx={{ paddingBottom: '2%' }}> Create / Edit Employee </Typography>
-                        <Typography> Filters </Typography>
-                        <Divider color='white' />
-                        <Typography> First Name </Typography>
-                        <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} sx={{ width: '30%' }} />
-                        <Divider color='white' />
-                        <Typography> Last Name </Typography>
-                        <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} sx={{ width: '30%' }} />
-                        <Divider color='white' />
-                        <Typography> Telephone Number </Typography>
-                        <TextField value={telephoneNumber} onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '30%' }} />
-                        <Divider color='white' />
-                        <Typography> Email Address </Typography>
-                        <TextField value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '30%' }} />
-                        {props.edit &&
-                            <div>
+                        <div style={{ display: 'flex' }}>
+                            <Typography sx={{ padding: '5%' }}> Name </Typography>
+                            <TextField value={departmentName} onChange={(e) => setDepartmentName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                        </div>
+                        <div>
+                            <div style={{ display: 'flex' }}>
                                 <Typography> Manager </Typography>
                                 <Autocomplete
-                                    multiple
                                     disablePortal
-                                    options={Department}
+                                    options={props.manager}
+                                    getOptionLabel={(options) => options.managerName}
                                     sx={{ width: 300, paddingLeft: '5%' }}
                                     renderInput={(params) => <TextField {...params} label="Select Manager" />}
-                                    onChange={(e, v) => {
-                                        if (v)
-                                            console.log(v)
+                                    onChange={(e, value) => {
+                                        if (value!==null)
+                                            setManager(value)
                                     }}
                                 />
+                            </div>
+                            <div style={{ display: 'flex' }}>
                                 <Typography> Status </Typography>
                                 <Autocomplete
                                     disablePortal
                                     options={StatusOptions}
+                                    value={getStatusValue()}
                                     sx={{ width: 300, paddingLeft: '5%' }}
                                     renderInput={(params) => <TextField {...params} variant='standard' label="Select Active/Inactive" />}
                                     onChange={(e, v) => {
@@ -116,18 +152,20 @@ const Employee_Edit_Create = (props: Props) => {
                                     }}
                                 />
                             </div>
-                        }
-                        <Button variant='outlined' color='inherit' sx={{ width: '15%' }} onClick={() => {
+                        </div>
+                        <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
                             if (props.edit) {
-                                EditEmployeeDetails({ id: props.employeeData.id, firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role })
+                                
+                                EditDepartmentDetails({ id: props.DepartmentData.id, name: departmentName, status: status, managerId: manager.id })
                             }
-                            else{
-                                CreateEmployee({firstName, lastName, telephoneNumber, emailAddress, status: false, role: 'Employee'})
+                            else {
+                                CreateDepartment({ managerId: manager.id, name: departmentName, status: status })
                             }
+                            props.exit()
                         }}>
                             save
                         </Button>
-                        <Button variant='outlined' color='inherit' sx={{ width: '15%' }} onClick={() => props.cancel()}>
+                        <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%', right: '-10%' }} onClick={() => props.exit()}>
                             cancel
                         </Button>
                     </Grid2>
@@ -137,4 +175,4 @@ const Employee_Edit_Create = (props: Props) => {
     )
 }
 
-export default Employee_Edit_Create
+export default Department_Edit_Create

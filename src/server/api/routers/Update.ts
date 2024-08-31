@@ -1,4 +1,4 @@
-import { boolean, z } from "zod";
+import {  z } from "zod";
 
 import {
   createTRPCRouter,
@@ -24,6 +24,56 @@ export const updateRouter = createTRPCRouter({
             id: input.id
         }
       });
+      return 'Success'
     }),
-   
+   updateEmployeeManagerLink: publicProcedure
+   .input(z.object({EmployeeId: z.number(), managerId: z.number()}))
+   .mutation( async({ctx, input}) => {
+    await ctx.db.managerEmployee.update({
+      data: {
+        managerId: input.managerId
+      },
+      where: {
+        EmployeeId: input.EmployeeId
+      }
+    })
+   }),
+   updateManager: publicProcedure
+   .input(z.object({oldEmail: z.string(), newEmail: z.string(), managerName: z.string()}))
+   .mutation(async({ctx, input}) => {
+    await ctx.db.manager.update({
+      data:{
+        emailAddress: input.newEmail,
+        managerName: input.managerName
+      },
+      where: {
+        emailAddress: input.oldEmail
+      }
+    })
+   }),
+   updateDepartment: publicProcedure
+   .input(z.object({id: z.number(), name: z.string(), status: z.boolean()}))
+   .mutation(async({ctx, input}) => {
+    await ctx.db.departments.update({
+      data: {
+        name: input.name,
+        status: input.status
+      },
+      where: {
+        id: input.id
+      }
+    })
+   }),
+   updateDepartmentManagerLink: publicProcedure
+   .input(z.object({managerId: z.number(), departmentId: z.number()}))
+   .mutation(async({ctx, input}) => {
+    await ctx.db.managerDepartment.update({
+      data: {
+        managerId: input.managerId
+      },
+      where: {
+        DepartmentId: input.departmentId
+      }
+    })
+   })
 })

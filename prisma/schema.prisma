@@ -19,28 +19,32 @@ model Employees {
     firstName       String
     lastName        String
     telephoneNumber String
-    emailAddress    String
+    emailAddress    String  @unique
     password        String
     status          Boolean
-    Manager         String
     role            String
-    departmentName  String
 }
 
 model Manager {
-    id        Int    @id @default(autoincrement())
-    firstName String
-    lastName  String
+    id           Int    @id @default(autoincrement())
+    managerName  String
+    emailAddress String @unique
 }
 
 model ManagerEmployee {
     id         Int @id @default(autoincrement())
     managerId  Int
-    EmployeeId Int
+    EmployeeId Int @unique
 }
 
 model Departments {
     id     Int     @id @default(autoincrement())
     name   String  @unique
     status Boolean
+}
+
+model ManagerDepartment {
+    id           Int @id @default(autoincrement())
+    managerId    Int
+    DepartmentId Int @unique
 }

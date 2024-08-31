@@ -81,41 +81,35 @@ interface TablePaginationActionsProps {
   //     fontSize: 14,
   //   },
   // }));
-  interface EmployeesData {
+  interface Manager {
     id: number,
-    firstName: string,
-    lastName: string,
-    telephoneNumber: string,
-    emailAddress: string,
     managerName: string,
-    password: string,
-    status: boolean,
-    role: string
-  }
-
-  interface Employees {
+    emailAddress: string
+}
+  interface DepartmentsTable {
     id: number,
-    firstName: string,
-    lastName: string,
-    telephoneNumber: string,
-    emailAddress: string,
-    password: string,
+    name: string,
     status: boolean,
-    role: string
+    manager: Manager
+}
+
+interface Department {
+    id: number,
+    name: string,
+    status: boolean
 }
 
   interface Props {
-    employeeData: EmployeesData[],
-    editEmployee(data:Employees ): void,
-    user: Employees
+    departmentData: DepartmentsTable[],
+    editDepartment(data:Department ): void,
   }
-const EmployeeTable = (props: Props) => {
+const Department_Table = (props: Props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.employeeData.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.departmentData.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -137,41 +131,29 @@ const EmployeeTable = (props: Props) => {
       <TableHead>
           <TableRow>
             <TableCell align="right">Edit</TableCell>
-            <TableCell align="right">First Name</TableCell>
-            <TableCell align="right">Last Name</TableCell>
-            <TableCell align="right">Telephone Number</TableCell>
-            <TableCell align="right">Email Address</TableCell>
+            <TableCell align="right">Name</TableCell>
             <TableCell align="right">Manager</TableCell>
             <TableCell align="right">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? props.employeeData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : props.employeeData
+            ? props.departmentData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : props.departmentData
           ).map((row) => (
             <TableRow key={row.id}>
               <TableCell style={{ width: 200 }}  align="right">
-              <Button startIcon={<EditIcon/>} disabled={props.user.role==='Manager' && props.user.id !== row.id} onClick={() => props.editEmployee(row)}/>
-                <Button variant='text' disabled={props.user.role==='Employee'}>{row.status ? 'Deactivate' : 'activate'}</Button>
+              <Button startIcon={<EditIcon/>} onClick={() => props.editDepartment(row)}/>
+                <Button variant='text'>{row.status ? 'Deactivate' : 'activate'}</Button>
               </TableCell>
               <TableCell style={{ width: 150 }}  align="right">
-                {row.firstName}
+                {row.name}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                {row.lastName}
+                {row.manager.managerName}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                {row.telephoneNumber}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.emailAddress}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.managerName}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.status ? 'Active' : 'Inactive'}
+                {row.status}
               </TableCell>
             </TableRow>
           ))}
@@ -186,7 +168,7 @@ const EmployeeTable = (props: Props) => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
               colSpan={4}
-              count={props.employeeData.length}
+              count={props.departmentData.length}
               rowsPerPage={rowsPerPage}
               page={page}
               slotProps={{
@@ -208,4 +190,4 @@ const EmployeeTable = (props: Props) => {
   );
 }
 
-export default EmployeeTable
+export default Department_Table
