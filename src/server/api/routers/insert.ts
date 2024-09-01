@@ -8,7 +8,7 @@ import {
 
 export const InsertRouter = createTRPCRouter({
   insertEmployees: publicProcedure
-    .input(z.object({ firstName: z.string(), lastName: z.string(), telephoneNumber: z.string(), emailAddress: z.string(), status: z.boolean(), role: z.string() }))
+    .input(z.object({ firstName: z.string(), lastName: z.string(), telephoneNumber: z.string(), emailAddress: z.string(), password: z.string(), status: z.boolean(), role: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.employees.create({
         data: {
@@ -16,7 +16,7 @@ export const InsertRouter = createTRPCRouter({
           lastName: input.lastName,
           telephoneNumber: input.telephoneNumber,
           emailAddress: input.emailAddress,
-          password: 'Password123#',
+          password: input.password,
           status: input.status,
           role: input.role,
         },

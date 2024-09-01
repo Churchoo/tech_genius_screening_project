@@ -7,6 +7,7 @@ interface CreateEmployee {
     lastName: string,
     telephoneNumber: string,
     emailAddress: string,
+    password: string,
     status: boolean,
     role: string
 }
@@ -39,6 +40,7 @@ export function AddEmployee() {
             lastName: "Johnson",
             telephoneNumber: '+2712-345-6789',
             emailAddress: 'stevejohnson@gmail.com',
+            password: "Password123#",
             status: true,
             role: 'Manager'
         },
@@ -47,6 +49,7 @@ export function AddEmployee() {
             lastName: "Johnson",
             telephoneNumber: '+2712-345-6789',
             emailAddress: 'jackjohnson@gmail.com',
+            password: "Password123#",
             status: true,
             role: 'Employee'
         },
@@ -55,6 +58,7 @@ export function AddEmployee() {
             lastName: "Jack",
             telephoneNumber: '+2712-479-9876',
             emailAddress: 'stewardjack@gmail.com',
+            password: "Password123#",
             status: false,
             role: 'Manager'
         },
@@ -63,6 +67,7 @@ export function AddEmployee() {
             lastName: "Jack",
             telephoneNumber: '+2712-497-9876',
             emailAddress: 'stevenjack@gmail.com',
+            password: "Password123#",
             status: true,
             role: 'Employee'
         },
@@ -71,6 +76,7 @@ export function AddEmployee() {
             lastName: "Rock",
             telephoneNumber: '+2712-842-9876',
             emailAddress: 'peterrock@gmail.com',
+            password: "Password123#",
             status: false,
             role: 'Employee'
         },
@@ -79,6 +85,7 @@ export function AddEmployee() {
             lastName: "Chan",
             telephoneNumber: '+2712-986-9876',
             emailAddress: 'realjackychan@gmail.com',
+            password: "Password123#",
             status: false,
             role: 'Employee'
         },
@@ -87,6 +94,7 @@ export function AddEmployee() {
             lastName: "Jackson",
             telephoneNumber: '+2712-345-6789',
             emailAddress: 'stevejackson@gmail.com',
+            password: "Password123#",
             status: true,
             role: 'Manager'
         },
@@ -95,6 +103,7 @@ export function AddEmployee() {
             lastName: "Jackson",
             telephoneNumber: '+2712-345-6789',
             emailAddress: 'jackjackson@gmail.com',
+            password: "Password123#",
             status: true,
             role: 'Employee'
         },
@@ -103,6 +112,7 @@ export function AddEmployee() {
             lastName: "Jack",
             telephoneNumber: '+2712-479-4286',
             emailAddress: 'stewardjack@gmail.com',
+            password: "Password123#",
             status: false,
             role: 'Manager'
         },
@@ -111,6 +121,7 @@ export function AddEmployee() {
             lastName: "Jacky",
             telephoneNumber: '+2712-497-7482',
             emailAddress: 'stevenjacky@gmail.com',
+            password: "Password123#",
             status: true,
             role: 'Employee'
         },
@@ -119,6 +130,7 @@ export function AddEmployee() {
             lastName: "Rocky",
             telephoneNumber: '+2712-842-2468',
             emailAddress: 'peterrocky@gmail.com',
+            password: "Password123#",
             status: false,
             role: 'Employee'
         },
@@ -127,6 +139,7 @@ export function AddEmployee() {
             lastName: "Chan",
             telephoneNumber: '+2712-986-8462',
             emailAddress: 'realjacksonchan@gmail.com',
+            password: "Password123#",
             status: false,
             role: 'Employee'
         },

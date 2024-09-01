@@ -9,8 +9,21 @@ interface Employee {
     lastName: string,
     telephoneNumber: string,
     emailAddress: string,
+    password: string,
     status: boolean,
     role: string
+}
+
+interface EmployeesLink {
+    id: number,
+    firstName: string,
+    lastName: string,
+    telephoneNumber: string,
+    emailAddress: string,
+    password: string,
+    status: boolean,
+    role: string,
+    managerId: number
 }
 
 interface CreateEmployee {
@@ -18,6 +31,7 @@ interface CreateEmployee {
     lastName: string,
     telephoneNumber: string,
     emailAddress: string,
+    password: string,
     status: boolean,
     role: string
 }
@@ -30,8 +44,11 @@ interface Manager {
 
 interface Props {
     employeeData: Employee,
+    employees: Employee[]
     manager: Manager[],
     edit: boolean,
+    addData(data: Employee): void,
+    addDataManager(data: EmployeesLink): void,
     exit(): void
 }
 const Employee_Edit_Create = (props: Props) => {
@@ -40,33 +57,83 @@ const Employee_Edit_Create = (props: Props) => {
     const [lastName, setLastName] = useState(props.employeeData.lastName)
     const [telephoneNumber, setTelephoneNumber] = useState(props.employeeData.telephoneNumber)
     const [emailAddress, setEmailAddress] = useState(props.employeeData.emailAddress)
+    const [error, setError] = useState(false)
     const [manager, setManager] = useState<Manager>()
     const [status, setStatus] = useState(props.employeeData.status)
     const getStatusValue = () => {
-        if(status)
+        if (status) {
             return "Active"
+        }
         return "Inactive"
     }
     const updateEmployee = api.update.updateEmployees.useMutation()
     const createEmployee = api.insert.insertEmployees.useMutation()
     const EmployeeManagerLink = api.update.updateEmployeeManagerLink.useMutation()
     const ManagerEdit = api.update.updateManager.useMutation()
+
+    const getId=()=>{
+        if(props.edit){
+            return props.employeeData.id
+        }
+        else{
+            console.log(props.employees.length)
+            return props.employees.length
+        }
+    }
+    const checkData = (data: Employee) => {
+        if(data.firstName===""||data.lastName===""||data.telephoneNumber===""||data.emailAddress===""){
+            setError(true)
+        } else {
+            if (props.edit) {
+                EditEmployeeDetails({ id: data.id, firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role, password: "Password123#" })
+            }
+            else {
+                CreateEmployee({id: data.id, firstName, lastName, telephoneNumber, emailAddress, status: false, role: 'Employee', password: "Password123#" })
+            } 
+        }
+    }
+
     const EditEmployeeDetails = (data: Employee) => {
-        if(data.role==='Manager'){
-            ManagerEdit.mutate({managerName: data.firstName + " " + data.lastName, oldEmail: props.employeeData.emailAddress, newEmail: data.emailAddress})
+        if (data.role === 'Manager') {
+            ManagerEdit.mutate({ managerName: data.firstName + " " + data.lastName, oldEmail: props.employeeData.emailAddress, newEmail: data.emailAddress })
         }
         updateEmployee.mutate(data)
-        if(manager){
-            EmployeeManagerLink.mutate({EmployeeId: props.employeeData.id, managerId: manager.id})
+        if (manager) {
+            EmployeeManagerLink.mutate({ EmployeeId: props.employeeData.id, managerId: manager.id })
+            props.addDataManager({
+                id: data.id, 
+                firstName: data.firstName, 
+                lastName: data.lastName, 
+                telephoneNumber: data.telephoneNumber, 
+                emailAddress: data.emailAddress,
+                password: "Password123#",
+                status: data.status,
+                role: data.role,
+                managerId: manager.id
+            })
         }
+        props.addData(data)
     }
-    const CreateEmployee = (data: CreateEmployee) => {
-        createEmployee.mutate(data)
+
+    const CreateEmployee = (data: Employee) => {
+        createEmployee.mutate({firstName: data.firstName, lastName: data.lastName, telephoneNumber: data.telephoneNumber, emailAddress: data.emailAddress, password: "Password123#", status: data.status, role: "Employee"})
+        props.addData({    
+            id: data.id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            telephoneNumber: data.telephoneNumber,
+            emailAddress: data.emailAddress,
+            status: data.status,
+            role: data.role,
+            password: "Password123#"
+        })
     }
+    
     return (
         <div>
             <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
                 <Box
+                    component="form"
                     height={'5vh'}
                     width={'90%'}
                     my={4}
@@ -74,7 +141,9 @@ const Employee_Edit_Create = (props: Props) => {
                     flexDirection='column'
                     justifyContent='center'
                     p={2}
-                    sx={{ border: '2px solid grey', alignSelf: 'center' }}>
+                    sx={{ border: '2px solid grey', alignSelf: 'center' }}
+                    autoComplete='off'
+                >
                     <Typography> HR Administration System</Typography>
                 </Box>
             </div>
@@ -89,23 +158,23 @@ const Employee_Edit_Create = (props: Props) => {
                             <Typography> Menu </Typography>
                         </Box>
                     </Grid2>
-                    <Grid2 xs='auto' >
+                    <Grid2 xs='auto' sx={{width: '70vh'}}>
                         <Typography sx={{ paddingBottom: '2%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%' }}> First Name </Typography>
-                            <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <Typography sx={{ padding: '5%', paddingRight: '10vh' }}> First Name </Typography>
+                            <TextField value={firstName} error={error&&firstName===""} helperText={error && firstName==="" ? "Enter First Name" : ""} onChange={(e) => setFirstName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%' }}> Last Name </Typography>
-                            <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} sx={{ width: '30%', padding: '3%' }} />
+                            <Typography sx={{ padding: '5%', paddingRight: '10vh' }}> Last Name </Typography>
+                            <TextField value={lastName} error={error&&lastName===""} helperText={error && lastName==="" ? "Enter Last Name" : ""} onChange={(e) => setLastName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%' }}> Telephone Number </Typography>
-                            <TextField value={telephoneNumber} onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '30%', padding: '3%' }} />
+                            <Typography sx={{ padding: '5%' , paddingRight: '4vh'}}> Telephone Number </Typography>
+                            <TextField value={telephoneNumber} error={error&&telephoneNumber===""} helperText={error && telephoneNumber==="" ? "Enter Telephone Number" : ""} onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%' }}> Email Address </Typography>
-                            <TextField value={emailAddress} onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '30%', padding: '3%' }} />
+                            <Typography sx={{ padding: '5%',  paddingRight: '7vh' }}> Email Address </Typography>
+                            <TextField value={emailAddress} error={error&&telephoneNumber===""} helperText={error && firstName==="" ? "Enter Email Address" : ""} onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         {props.edit &&
                             <div>
@@ -144,13 +213,7 @@ const Employee_Edit_Create = (props: Props) => {
                             </div>
                         }
                         <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
-                            if (props.edit) {
-                                EditEmployeeDetails({ id: props.employeeData.id, firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role })
-                            }
-                            else {
-                                CreateEmployee({ firstName, lastName, telephoneNumber, emailAddress, status: false, role: 'Employee' })
-                            }
-                            props.exit()
+                            checkData({ id: getId(), firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role, password: "Password123#" })
                         }}>
                             save
                         </Button>

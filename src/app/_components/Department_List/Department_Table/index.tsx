@@ -101,7 +101,7 @@ interface Department {
 
   interface Props {
     departmentData: DepartmentsTable[],
-    editDepartment(data:Department ): void,
+    editDepartment(data:DepartmentsTable ): void,
   }
 const Department_Table = (props: Props) => {
   const [page, setPage] = React.useState(0);

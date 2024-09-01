@@ -86,7 +86,7 @@ const Navigation = () => {
         handleSeeDepartment()
         handleSeeEmployees()
     }
-
+    
     if (!loggedIn) {
         return (
             <Login User={(userData: Employees) => setLoginData(userData)} />
@@ -96,14 +96,14 @@ const Navigation = () => {
     if (viewEmployees && getData && user) {
         return (
             <Employee_List
-                user={user} employees={employeeData} allDepartment={departmentData} allManagers={managerData}
-                managerDepartmentLink={departmentMangerLink} managerEmployeesLink={employeeMangerLink} viewDepartment={() => viewDepartmentPage()} />
+                user={user} employees={employeeData} allDepartment={departmentData} allManagers={managerData} addEmployeeData={(data) => setEmployeeData(data)}
+                managerDepartmentLink={departmentMangerLink} managerEmployeesLink={employeeMangerLink} viewDepartment={() => viewDepartmentPage()} addemployeeManagerLink={(data) => setEmployeeMangerLink(data) } />
         )
     }
 
     if (viewDepartment && getData && user) {
         return (
-            <Department_List departments={departmentData} managerDepartmentLink={departmentMangerLink} managers={managerData} user={user} viewEmployees={() => viewEmployeesPage()} />
+            <Department_List addDepartment={(data) => setDepartmentData(data)} addDepartmentManagerLink={(data) => setDepartmentMangerLink(data)} departments={departmentData} managerDepartmentLink={departmentMangerLink} managers={managerData} user={user} viewEmployees={() => viewEmployeesPage()} />
         )
     }
     return (

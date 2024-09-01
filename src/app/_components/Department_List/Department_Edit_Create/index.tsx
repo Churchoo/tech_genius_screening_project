@@ -33,31 +33,23 @@ interface EditDepartments {
     managerId: number
 }
 
-interface CreateEmployee {
-    firstName: string,
-    lastName: string,
-    telephoneNumber: string,
-    emailAddress: string,
-    status: boolean,
-    role: string
-}
-
 interface Manager {
     id: number,
     managerName: string,
     emailAddress: string
 }
 
-interface createDepartment {
+interface CreateDepartment {
     name: string,
     status: boolean,
-    managerId: number
+    manager: Manager
 }
 
 interface Props {
     DepartmentData: DepartmentsTable,
     manager: Manager[],
     edit: boolean,
+    addData(data: DepartmentsTable): void,
     exit(): void
 }
 const Department_Edit_Create = (props: Props) => {
@@ -65,11 +57,8 @@ const Department_Edit_Create = (props: Props) => {
     const [departmentName, setDepartmentName] = useState(props.DepartmentData.name)
     const [manager, setManager] = useState<Manager>(props.DepartmentData.manager)
     const [status, setStatus] = useState(props.DepartmentData.status)
-    const getStatusValue = () => {
-        if (status)
-            return "Active"
-        return "Inactive"
-    }
+    const [error, setError] = useState(false)
+
     const updateDepartment = api.update.updateDepartment.useMutation()
     const createDepartment = api.insert.insertDepartment.useMutation()
     const createDepartmentManagerLink = api.insert.insertManagerDepartmentLink.useMutation()
@@ -79,18 +68,37 @@ const Department_Edit_Create = (props: Props) => {
         updateDepartment.mutate({ id: data.id, name: data.name, status: data.status })
         updateDepartmentManagerLink.mutate({ departmentId: data.id, managerId: data.managerId })
     }
-    const CreateDepartment = (data: createDepartment) => {
+    const CreateDepartment = (data: CreateDepartment) => {
         createDepartment.mutate({ name: data.name, status: data.status })
         const newDepartment = createDepartment.data
-        console.log(newDepartment)
         if (newDepartment && newDepartment !== null) {
-            createDepartmentManagerLink.mutate({ managerId: data.managerId, departmentId: newDepartment.id })
+            createDepartmentManagerLink.mutate({ managerId: data.manager.id, departmentId: newDepartment.id })
+        }
+    }
+
+    const getStatusValue = () => {
+        if (status)
+            return "Active"
+        return "Inactive"
+    }
+
+    const checkData = () => {
+        if (departmentName === "" || manager.id < 0 || status === undefined) {
+            setError(true)
+        }
+        else if (props.edit) {
+            EditDepartmentDetails({ id: props.DepartmentData.id, name: departmentName, status: status, managerId: manager.id })
+        }
+        else {
+            CreateDepartment({ manager: manager, name: departmentName, status: status })
+            props.addData
         }
     }
     return (
         <div>
             <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
                 <Box
+                    component="form"
                     height={'5vh'}
                     width={'90%'}
                     my={4}
@@ -98,7 +106,9 @@ const Department_Edit_Create = (props: Props) => {
                     flexDirection='column'
                     justifyContent='center'
                     p={2}
-                    sx={{ border: '2px solid grey', alignSelf: 'center' }}>
+                    sx={{ border: '2px solid grey', alignSelf: 'center' }}
+                    autoComplete='off'
+                >
                     <Typography> HR Administration System</Typography>
                 </Box>
             </div>
@@ -117,7 +127,7 @@ const Department_Edit_Create = (props: Props) => {
                         <Typography sx={{ paddingBottom: '2%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%' }}> Name </Typography>
-                            <TextField value={departmentName} onChange={(e) => setDepartmentName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <TextField value={departmentName} error={error&&departmentName===""} helperText={error && departmentName==="" ? "Enter Department Name" : ""} onChange={(e) => setDepartmentName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div>
                             <div style={{ display: 'flex' }}>
@@ -127,9 +137,10 @@ const Department_Edit_Create = (props: Props) => {
                                     options={props.manager}
                                     getOptionLabel={(options) => options.managerName}
                                     sx={{ width: 300, paddingLeft: '5%' }}
-                                    renderInput={(params) => <TextField {...params} label="Select Manager" />}
+                                    renderInput={(params) => <TextField {...params} label="Select Manager" error={error&&manager===undefined}/>}
+                                    value={manager}
                                     onChange={(e, value) => {
-                                        if (value!==null)
+                                        if (value !== null)
                                             setManager(value)
                                     }}
                                 />
@@ -154,14 +165,7 @@ const Department_Edit_Create = (props: Props) => {
                             </div>
                         </div>
                         <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
-                            if (props.edit) {
-                                
-                                EditDepartmentDetails({ id: props.DepartmentData.id, name: departmentName, status: status, managerId: manager.id })
-                            }
-                            else {
-                                CreateDepartment({ managerId: manager.id, name: departmentName, status: status })
-                            }
-                            props.exit()
+                            checkData()
                         }}>
                             save
                         </Button>

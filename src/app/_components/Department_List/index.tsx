@@ -48,7 +48,9 @@ interface Props {
     departments: Departments[],
     managerDepartmentLink: ManagerDepartmentLink[],
     managers: Manager[],
-    viewEmployees(): void
+    viewEmployees(): void,
+    addDepartment(data: Departments[]): void,
+    addDepartmentManagerLink(data: ManagerDepartmentLink[]): void
 }
 
 
@@ -136,14 +138,27 @@ const Department_List = (props: Props) => {
         setEditData(data)
         setEditDepartment(true)
     }
+
+    const addDepartment=(data: DepartmentsTable)=>{
+        const oldDepartmentData = unfilteredData
+        oldDepartmentData.push(data)
+        setUnfilteredData(oldDepartmentData)
+        props.addDepartment(oldDepartmentData)
+        const OldManagerDepartmentLink = props.managerDepartmentLink
+        OldManagerDepartmentLink.push({id:999, DepartmentId: data.id, managerId: data.manager.id})
+        props.addDepartmentManagerLink(OldManagerDepartmentLink)
+    }
+
+    
+//addData={(data) => addDepartment(data)}
     if(editData&&editDepartment){
         return(
-            <Department_Edit_Create DepartmentData={editData} edit={editDepartment} manager={props.managers} exit={() => exit()} />
+            <Department_Edit_Create DepartmentData={editData} edit={editDepartment} manager={props.managers} addData={(data) => addDepartment(data)} exit={() => exit()} />
         )
     }
     if(createDepartment){
         return(
-            <Department_Edit_Create DepartmentData={({id: 0, manager: {id: 0, emailAddress: "", managerName: ""}, name: "", status: false})} edit={editDepartment} exit={()=>exit()} manager={props.managers} />
+            <Department_Edit_Create DepartmentData={({id: 0, manager: {id: 0, emailAddress: "", managerName: ""}, name: "", status: false})} addData={(data) => addDepartment(data)} edit={editDepartment} exit={()=>exit()} manager={props.managers} />
         )
     }
 
@@ -204,7 +219,7 @@ return (
                         </Box>
                     </Grid2>
                     <div style={{ width: '80%', display: 'flex', justifyContent: 'center', flexDirection: 'column', paddingLeft: '15%' }}>
-                        <Department_Table departmentData={departmentData } editDepartment={() => { }} />
+                        <Department_Table departmentData={departmentData } editDepartment={(data) => editDepartmentSetup(data)} />
                         </div>
                 </Grid2>
             </div>
