@@ -1,6 +1,6 @@
 import { getRouter } from "ernst_stephen_fischer/server/api/routers/Get";
 import { createCallerFactory, createTRPCRouter } from "ernst_stephen_fischer/server/api/trpc";
-import { InsertRouter } from "./routers/insert"; 
+import { InsertRouter } from "./routers/Insert"; 
 import { updateRouter } from "./routers/Update";
 
 /**

@@ -4,6 +4,7 @@ import Login from '../Login'
 import Employee_List from '../Employee_List'
 import { api } from 'ernst_stephen_fischer/trpc/react'
 import Department_List from '../Department_List'
+import { getServerSession } from 'next-auth'
 
 interface Employees {
     id: number,
@@ -60,11 +61,12 @@ const Navigation = () => {
         setUser(user)
         setLoggedIn(true)
         handleSeeEmployees()
+        const Session = getServerSession()
     }
     if (!getData && employees && allDepartment && allManagers && managerEmployeesLink && managerDepartmentLink) {
-        setEmployeeData(employees)
-        setManagerData(allManagers)
-        setDepartmentData(allDepartment)
+        setEmployeeData(employees.sort((a,b) => a.id > b.id ? 1 : -1))
+        setManagerData(allManagers.sort((a,b) => a.id > b.id ? 1 : -1))
+        setDepartmentData(allDepartment.sort((a,b) => a.id > b.id ? 1 : -1))
         setDepartmentMangerLink(managerDepartmentLink)
         setEmployeeMangerLink(managerEmployeesLink)
         setGetData(true)

@@ -1,9 +1,10 @@
 "use client"
 import { Autocomplete, Box, Button, Divider, TextField, Typography } from '@mui/material'
 import Grid2 from '@mui/material/Unstable_Grid2'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EmployeeTable from './EmployeeTable'
 import Employee_Edit_Create from './Employee_Edit_Create'
+import { api } from 'ernst_stephen_fischer/trpc/react'
 
 interface Employees {
     id: number,
@@ -53,7 +54,7 @@ interface tableEmployees {
     lastName: string,
     telephoneNumber: string,
     emailAddress: string,
-    managerName: string,
+    manager: Manager,
     password: string,
     status: boolean,
     role: string
@@ -81,16 +82,21 @@ const Employee_List = (props: Props) => {
     const StatusOptions = ["Active", 'Inactive']
     const [create, setCreate] = useState(false)
     const [edit, setEdit] = useState(false)
+    const [filter, setFilter] = useState(false)
     const [getData, setGetData] = useState(false)
     const [getTableData, setGetTableData] = useState(false)
     const [filterStatus, setFilterStatus] = useState<boolean>()
     const [filterDepartment, setFilterDepartment] = useState<Departments>()
     const [filterManager, setFilterManager] = useState<Manager>()
-    const [editEmployeeData, setEditEmployeeData] = useState<Employees>()
+    const [editEmployeeData, setEditEmployeeData] = useState<tableEmployees>()
     const [employeeData, setEmployeeData] = useState<Employees[]>([])
+    const [editedEmployeeData, setEditedEmployeeData] = useState<Employees[]>([])
     const [filteredData, setFilteredData] = useState<tableEmployees[]>([])
+    const [filteredDataCheck, setFilteredDataCheck] = useState<tableEmployees[]>([])
     const [employeeTableData, setEmployeeTableData] = useState<tableEmployees[]>([])
     const [employeeManagerLink, setEmployeeManagerLink] = useState<managerEmployeesLink[]>(props.managerEmployeesLink)
+
+    const updateEmplyeeStatus = api.update.updateEmployeeStatus.useMutation()
 
     const getSpecificEmployeeData = () => {
         setEmployeeData([props.user])
@@ -122,11 +128,106 @@ const Employee_List = (props: Props) => {
     }
 
     //filters the employees according to filter options chosen
+    const getStatusValue = () => {
+        if (filterStatus)
+            return "Active"
+        return "Inactive"
+    }
+    //Creates the table data
+    const TableData = () => {
+        if (employeeData.length > 0) {
+            const data = employeeData
+            let viewData: tableEmployees[] = []
+            for (let index = 0; index < data.length; index++) {
+                const element = data[index];
+                if (element) {
+                    if (element.role === "Manager") {
+                        {
+                            const newData: tableEmployees = {
+                                id: element.id,
+                                firstName: element.firstName,
+                                lastName: element.lastName,
+                                telephoneNumber: element.telephoneNumber,
+                                emailAddress: element.emailAddress,
+                                manager: {
+                                    id: -1,
+                                    managerName: "",
+                                    emailAddress: ""
+                                },
+                                password: element.password,
+                                status: element.status,
+                                role: element.role
+                            }
+                            viewData.push(newData)
+                        }
+                    }
+                    else {
+                        const manager = props.managerEmployeesLink?.find((value) => value.EmployeeId === element.id)
+                        if (manager) {
+                            const findManager = props.allManagers.find((value) => value.id === manager.managerId)
+                            if (findManager && element.role !== 'Manager') {
+                                const newData: tableEmployees = {
+                                    id: element.id,
+                                    firstName: element.firstName,
+                                    lastName: element.lastName,
+                                    telephoneNumber: element.telephoneNumber,
+                                    emailAddress: element.emailAddress,
+                                    manager: findManager,
+                                    password: element.password,
+                                    status: element.status,
+                                    role: element.role
+                                }
+                                viewData.push(newData)
+                            }
+                            else {
+                                const newData: tableEmployees = {
+                                    id: element.id,
+                                    firstName: element.firstName,
+                                    lastName: element.lastName,
+                                    telephoneNumber: element.telephoneNumber,
+                                    emailAddress: element.emailAddress,
+                                    manager: {
+                                        id: -1,
+                                        managerName: "",
+                                        emailAddress: ""
+                                    },
+                                    password: element.password,
+                                    status: element.status,
+                                    role: element.role
+                                }
+                                viewData.push(newData)
+                            }
+                        }
+                        else {
+                            const newData: tableEmployees = {
+                                id: element.id,
+                                firstName: element.firstName,
+                                lastName: element.lastName,
+                                telephoneNumber: element.telephoneNumber,
+                                emailAddress: element.emailAddress,
+                                manager: {
+                                    id: -1,
+                                    managerName: "",
+                                    emailAddress: ""
+                                },
+                                password: element.password,
+                                status: element.status,
+                                role: element.role
+                            }
+                            viewData.push(newData)
+                        }
+                    }
+                }
+            }
+            setEmployeeTableData(viewData)
+            setGetTableData(true)
+        }
+    }
+
     const filterEmployees = () => {
         if (filterStatus !== undefined) {
             const filteredEmployees = employeeTableData.filter((value) => value.status === filterStatus)
             setFilteredData(filteredEmployees)
-
         }
         if (filterDepartment) {
             const filteredDepartmentManagementLink = props.managerDepartmentLink?.find((value) => value.DepartmentId === filterDepartment.id)
@@ -149,6 +250,7 @@ const Employee_List = (props: Props) => {
                     }
                 }
             }
+            setFilter(true)
         }
         if (filterManager) {
             const filteredEmployeeManagementLink = employeeManagerLink?.filter((value) => value.managerId === filterManager.id)
@@ -164,112 +266,35 @@ const Employee_List = (props: Props) => {
                     }
                 }
                 setFilteredData(viewData)
+                setFilter(true)
             }
         }
     }
 
-    const getStatusValue = () => {
-        if (status)
-            return "Active"
-        return "Inactive"
-    }
-    //Creates the table data
-    const TableData = () => {
-        try {
-            if (employeeData.length > 0) {
-                const data = employeeData
-                let viewData: tableEmployees[] = []
-                for (let index = 0; index < data.length; index++) {
-                    const element = data[index];
-                    if (element) {
-                        if (element.role === "Manager") {
-                            {
-                                const newData: tableEmployees = {
-                                    id: element.id,
-                                    firstName: element.firstName,
-                                    lastName: element.lastName,
-                                    telephoneNumber: element.telephoneNumber,
-                                    emailAddress: element.emailAddress,
-                                    managerName: '',
-                                    password: element.password,
-                                    status: element.status,
-                                    role: element.role
-                                }
-                                viewData.push(newData)
-                            }
-                        }
-                        else {
-                            const manager = props.managerEmployeesLink?.find((value) => value.EmployeeId === element.id)
-                            if (manager) {
-                                const managerName = props.allManagers.find((value) => value.id === manager.managerId)?.managerName
-                                if (managerName && element.role !== 'Manager') {
-                                    const newData: tableEmployees = {
-                                        id: element.id,
-                                        firstName: element.firstName,
-                                        lastName: element.lastName,
-                                        telephoneNumber: element.telephoneNumber,
-                                        emailAddress: element.emailAddress,
-                                        managerName: managerName,
-                                        password: element.password,
-                                        status: element.status,
-                                        role: element.role
-                                    }
-                                    viewData.push(newData)
-                                }
-                                else {
-                                    const newData: tableEmployees = {
-                                        id: element.id,
-                                        firstName: element.firstName,
-                                        lastName: element.lastName,
-                                        telephoneNumber: element.telephoneNumber,
-                                        emailAddress: element.emailAddress,
-                                        managerName: '',
-                                        password: element.password,
-                                        status: element.status,
-                                        role: element.role
-                                    }
-                                    viewData.push(newData)
-                                }
-                            }
-                            else {
-                                const newData: tableEmployees = {
-                                    id: element.id,
-                                    firstName: element.firstName,
-                                    lastName: element.lastName,
-                                    telephoneNumber: element.telephoneNumber,
-                                    emailAddress: element.emailAddress,
-                                    managerName: '',
-                                    password: element.password,
-                                    status: element.status,
-                                    role: element.role
-                                }
-                                viewData.push(newData)
-                            }
-                        }
-                    }
-                }
-                console.log("here")
-                console.log(viewData)
-                setEmployeeTableData(viewData)
-                setFilteredData(viewData)
-                setGetTableData(true)
+    const addEmployeeData = async (data: Employees) => {
+        const newData = employeeData
+        if (!edit) {
+            newData.push(data)
+            props.addEmployeeData(newData)
+            updateEmployeeData(newData)
+        }
+        else {
+            const index = newData.findIndex(value => value.id === data.id)
+            if (newData[index]) {
+                const changedData = newData.filter(value => value.id !== data.id)
+                changedData.splice(index, 0, data)
+                updateEmployeeData(changedData)
+                props.addEmployeeData(changedData)
+                setEditedEmployeeData(changedData)
             }
         }
-        catch (error) {
-            console.log(error)
-        }
-    }
-
-    const addEmployeeData = (data: Employees) => {
-        const oldData = employeeData
-        oldData.push(data)
-        props.addEmployeeData(oldData)
-        setEmployeeData(oldData)
         setEdit(false)
         setCreate(false)
-        TableData()
     }
 
+    const updateEmployeeData = (data: Employees[]) => {
+        setEmployeeData(data,)
+    }
     const addemployeeManagerLink = (data: EmployeesLink) => {
         const link = employeeManagerLink
         link.push({ id: 100, EmployeeId: data.id, managerId: data.managerId })
@@ -279,19 +304,84 @@ const Employee_List = (props: Props) => {
         setEdit(false)
     }
 
-    const reset = () => {
+    const changeStatus = (id: number) => {
+        const newData = employeeData.filter(value => value.id !== id)
+        const index = employeeData.findIndex(value => value.id === id)
+        const data = employeeData[index]
+        if (data) {
+            const employee: Employees = {
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                telephoneNumber: data.telephoneNumber,
+                emailAddress: data.emailAddress,
+                password: data.password,
+                role: data.role,
+                status: !data.status
+            }
+            newData.splice(index, 0, employee)
+            updateEmplyeeStatus.mutate({ id, status: !data.status })
+            setEmployeeData(newData)
+            props.addEmployeeData(newData)
+            setEditedEmployeeData(newData)
+            if (filter) {
+                const filterIndex = filteredData.findIndex(value => value.id === data.id)
+                const filterData = filteredData.filter(value => value.id !== data.id)
+                if (filteredData[filterIndex]) {
+                    const filterEmployee: tableEmployees = {
+                        id: data.id,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        telephoneNumber: data.telephoneNumber,
+                        emailAddress: data.emailAddress,
+                        password: data.password,
+                        role: data.role,
+                        status: !data.status,
+                        manager: filteredData[filterIndex].manager
+                    }
+                    filterData.splice(filterIndex, 0, filterEmployee)
+                    setFilteredData(filterData)
+                    setFilteredDataCheck(filterData)
+                }
+            }
+        }
+    }
+
+
+
+    const Reset = () => {
         setFilteredData(employeeTableData)
+        setFilter(false)
     }
     if (!getTableData) {
         TableData();
     }
+    const compareArrays = (a: any, b: any) => {
+        return JSON.stringify(a) === JSON.stringify(b);
+    };
+    useEffect(() => {
+        if (editedEmployeeData.length > 0) {
+            if (compareArrays(editedEmployeeData, employeeData)) {
+                if (compareArrays(filteredDataCheck, filteredData)) {  
+                setGetTableData(false)
+            }
+            }
+        }
+    },
+        [getTableData, editedEmployeeData, filteredDataCheck])
+
     if (edit && editEmployeeData) {
         return (
             <div>
                 <Employee_Edit_Create employees={props.employees}
                     employeeData={editEmployeeData} edit={true} manager={props.allManagers}
                     addDataManager={(data: EmployeesLink) => addemployeeManagerLink(data)}
-                    addData={(data: Employees) => addEmployeeData(data)} exit={() => setEdit(false)} />
+                    addData={(data: Employees) => addEmployeeData(data)} exit={() => setEdit(false)}
+                    viewDepartment={() => {
+                        setEdit(false)
+                        setCreate(false)
+                        props.viewDepartment()
+                    }} />
             </div>
         )
     }
@@ -306,16 +396,27 @@ const Employee_List = (props: Props) => {
                     emailAddress: "",
                     password: "Password123#",
                     status: false,
-                    role: "Employee"
+                    role: "Employee",
+                    manager: {
+                        id: -1,
+                        emailAddress: "",
+                        managerName: ""
+                    }
                 })} edit={false} employees={props.employees} addData={(data: Employees) => addEmployeeData(data)}
                     addDataManager={(data: EmployeesLink) => addemployeeManagerLink(data)}
-                    manager={[]} exit={() => setCreate(false)} />
+                    manager={[]} exit={() => setCreate(false)}
+                    viewDepartment={() => {
+                        setEdit(false)
+                        setCreate(false)
+                        props.viewDepartment()
+                    }} />
             </div>
         )
     }
+
     return (
         <div>
-            <div> <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
+            <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
                 <Box
                     height={'5vh'}
                     width={'90%'}
@@ -328,91 +429,93 @@ const Employee_List = (props: Props) => {
                     <Typography> HR Administration System</Typography>
                 </Box>
             </div>
-                <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
-                    <Grid2 container spacing={3} >
-                            <Box
-                                height={'11vh'}
-                                width={'20vh'}
-                               display={'grid'}
-                                alignItems={'center'}
-                                sx={{ border: '2px solid grey' }}>
-                                <Typography sx={{paddingLeft: '38%'}}> Menu </Typography>
-                                <Button variant='text' color='inherit' onClick={() => props.viewDepartment()} disabled={props.user.role === 'Employee'}> View Departments</Button>
-                                <Button variant='text' color='inherit' onClick={() => setCreate(true)} disabled={props.user.role === 'Employee'}> Add Employee</Button>
-                            </Box>
-                        <Grid2 xs='auto' >
-                            <Typography sx={{ paddingBottom: '2%' }}> Employees </Typography>
-                            <Box
-                                height={'30vh'}
-                                width={'40vh'}
-                                display={'grid'}
-                                alignItems={'center'}
-                                flex={'wrap'}
-                                gap={1}
-                                sx={{ border: '2px solid grey' }}
-                            >
-                                <Typography> Filters </Typography>
-                                <Autocomplete
-                                    disabled={props.user.role === 'Employee'}
-                                    disablePortal
-                                    options={StatusOptions}
-                                    sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
-                                    value={getStatusValue()}
-                                    onChange={(event, value) => {
-                                        if (value === 'Active') {
-                                            setFilterStatus(true)
-                                        } else {
-                                            setFilterStatus(false)
-                                        }
-                                    }}
-                                    renderInput={(params) => <TextField {...params} label="Active/Inactive Status" />}
-                                />
-                                <Autocomplete
-                                    disabled={props.user.role === 'Employee'}
-                                    disablePortal
-                                    options={props.allDepartment}
-                                    getOptionLabel={(value) => value.name}
-                                    sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
-                                    value={filterDepartment}
-                                    onChange={(event, value) => {
-                                        if (value) {
-                                            setFilterDepartment(value)
-                                        }
-                                    }}
-                                    renderInput={(params) => <TextField {...params} label="select Department" />}
-                                />
-                                <Autocomplete
-                                    disabled={props.user.role === 'Employee'}
-                                    disablePortal
-                                    options={props.allManagers}
-                                    getOptionLabel={(value) => value.managerName}
-                                    sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
-                                    value={filterManager}
-                                    onChange={(event, value) => {
-                                        if (value) {
-                                            setFilterManager(value)
-                                        }
-                                    }}
-                                    renderInput={(params) => <TextField {...params} label="select Manager" />}
-                                />
-                                <Grid2 container spacing={-1} justifyContent={'space-between'} sx={{width: '60%', paddingLeft: '20%'}}>
-                                    <Button variant='outlined' color='inherit' sx={{ width: '15%' }} disabled={props.user.role === 'Employee'} onClick={() => filterEmployees()}>
-                                        Filter
-                                    </Button>
-                                    <Button variant='outlined' color='inherit' sx={{ width: '15%' }} disabled={props.user.role === 'Employee'} onClick={() => reset()}>
-                                        Reset
-                                    </Button>
-                                </Grid2>
-                            </Box>
-                        </Grid2>
-                        <div style={{ width: '80%', display: 'flex', justifyContent: 'center', flexDirection: 'column', paddingLeft: '15%' }}>
-                            <EmployeeTable employeeData={filteredData} user={props.user} editEmployee={(data) => {
+            <Typography variant='h4' sx={{ paddingLeft: '27vh' }}> Employee Details </Typography>
+            <div style={{ display: 'flex', paddingTop: '0.2vh', paddingLeft: '2%' }}>
+                <Grid2 container spacing={3} >
+                    <div style={{ paddingTop: '4.5vh' }}>
+                        <Box
+                            height={'11vh'}
+                            width={'20vh'}
+                            display={'grid'}
+                            alignItems={'center'}
+                            sx={{ border: '2px solid grey' }}>
+                            <Typography sx={{ paddingLeft: '38%' }}> Menu </Typography>
+                            <Button variant='text' color='inherit' onClick={() => props.viewDepartment()} disabled={props.user.role === 'Employee'}> View Departments</Button>
+                            <Button variant='text' color='inherit' onClick={() => setCreate(true)} disabled={props.user.role === 'Employee'}> Add Employee</Button>
+                        </Box>
+                    </div>
+                    <Grid2 xs='auto' sx={{ paddingTop: '4.5vh' }} >
+                        <Box
+                            height={'30vh'}
+                            width={'40vh'}
+                            display={'grid'}
+                            alignItems={'center'}
+                            flex={'wrap'}
+                            gap={1}
+                            sx={{ border: '2px solid grey' }}
+                        >
+                             <Typography variant='h5'> Filters </Typography>
+                            <Autocomplete
+                                disabled={props.user.role === 'Employee'}
+                                disablePortal
+                                options={StatusOptions}
+                                sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
+                                value={getStatusValue()}
+                                onChange={(event, value) => {
+                                    if (value === 'Active') {
+                                        setFilterStatus(true)
+                                    } else {
+                                        setFilterStatus(false)
+                                    }
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Active/Inactive Status" />}
+                            />
+                            <Autocomplete
+                                disabled={props.user.role === 'Employee'}
+                                disablePortal
+                                options={props.allDepartment}
+                                getOptionLabel={(value) => value.name}
+                                sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
+                                value={filterDepartment}
+                                onChange={(event, value) => {
+                                    if (value) {
+                                        setFilterDepartment(value)
+                                    }
+                                }}
+                                renderInput={(params) => <TextField {...params} label="select Department" />}
+                            />
+                            <Autocomplete
+                                disabled={props.user.role === 'Employee'}
+                                disablePortal
+                                options={props.allManagers}
+                                getOptionLabel={(value) => value.managerName}
+                                sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
+                                value={filterManager}
+                                onChange={(event, value) => {
+                                    if (value) {
+                                        setFilterManager(value)
+                                    }
+                                }}
+                                renderInput={(params) => <TextField {...params} label="select Manager" />}
+                            />
+                            <Grid2 container spacing={-1} justifyContent={'space-between'} sx={{ width: '60%', paddingLeft: '20%' }}>
+                                <Button variant='outlined' color='inherit' sx={{ width: '15%' }} disabled={props.user.role === 'Employee'} onClick={() => filterEmployees()}>
+                                    Filter
+                                </Button>
+                                <Button variant='outlined' color='inherit' sx={{ width: '15%' }} disabled={props.user.role === 'Employee'} onClick={() => Reset()}>
+                                    Reset
+                                </Button>
+                            </Grid2>
+                        </Box>
+                    </Grid2>
+                    <div style={{ width: '170vh', display: 'flex', justifyContent: 'center', flexDirection: 'column', paddingLeft: '21vh' }}>
+                        {getTableData && <EmployeeTable changeStatus={(id) => changeStatus(id)} employeeData={filter ? filteredData : employeeTableData}
+                            user={props.user} editEmployee={(data) => {
                                 setEditEmployeeData(data)
                                 setEdit(true)
-                            }} />
-                        </div>
-                    </Grid2>
-                </div>
+                            }} />}
+                    </div>
+                </Grid2>
             </div>
         </div>
     )

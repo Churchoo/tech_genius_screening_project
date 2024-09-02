@@ -87,11 +87,17 @@ interface TablePaginationActionsProps {
     lastName: string,
     telephoneNumber: string,
     emailAddress: string,
-    managerName: string,
     password: string,
     status: boolean,
-    role: string
+    role: string,
+    manager: Manager
   }
+
+  interface Manager {
+    id: number,
+    managerName: string,
+    emailAddress: string
+}
 
   interface Employees {
     id: number,
@@ -106,10 +112,12 @@ interface TablePaginationActionsProps {
 
   interface Props {
     employeeData: EmployeesData[],
-    editEmployee(data:Employees ): void,
-    user: Employees
+    editEmployee(data:EmployeesData ): void,
+    user: Employees,
+    changeStatus(id: number): void
   }
 const EmployeeTable = (props: Props) => {
+  console.log(props.employeeData)
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -136,13 +144,13 @@ const EmployeeTable = (props: Props) => {
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
       <TableHead>
           <TableRow>
-            <TableCell align="right">Edit</TableCell>
-            <TableCell align="right">First Name</TableCell>
-            <TableCell align="right">Last Name</TableCell>
-            <TableCell align="right">Telephone Number</TableCell>
-            <TableCell align="right">Email Address</TableCell>
-            <TableCell align="right">Manager</TableCell>
-            <TableCell align="right">Status</TableCell>
+            <TableCell align="left">Actions</TableCell>
+            <TableCell align="left">First Name</TableCell>
+            <TableCell align="left">Last Name</TableCell>
+            <TableCell align="left">Telephone Number</TableCell>
+            <TableCell align="left">Email Address</TableCell>
+            <TableCell align="left">Manager</TableCell>
+            <TableCell align="left">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -151,26 +159,26 @@ const EmployeeTable = (props: Props) => {
             : props.employeeData
           ).map((row) => (
             <TableRow key={row.id}>
-              <TableCell style={{ width: 200 }}  align="right">
+              <TableCell style={{ width: 200 }}  align="left">
               <Button startIcon={<EditIcon/>} disabled={props.user.role==='Manager' && props.user.id !== row.id} onClick={() => props.editEmployee(row)}/>
-                <Button variant='text' disabled={props.user.role==='Employee'}>{row.status ? 'Deactivate' : 'activate'}</Button>
+              <Button variant='text' disabled={props.user.role==='Employee'} onClick={() => props.changeStatus(row.id)} >{row.status ? 'Deactivate' : 'activate'}</Button>
               </TableCell>
-              <TableCell style={{ width: 150 }}  align="right">
+              <TableCell style={{ width: 150 }}  align="left">
                 {row.firstName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
+              <TableCell style={{ width: 160 }} align="left">
                 {row.lastName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
+              <TableCell style={{ width: 160 }} align="left">
                 {row.telephoneNumber}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
+              <TableCell style={{ width: 160 }} align="left">
                 {row.emailAddress}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.managerName}
+              <TableCell style={{ width: 160 }} align="left">
+                {row.manager.managerName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
+              <TableCell style={{ width: 160 }} align="left">
                 {row.status ? 'Active' : 'Inactive'}
               </TableCell>
             </TableRow>

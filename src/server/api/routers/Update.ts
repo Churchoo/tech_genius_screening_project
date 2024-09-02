@@ -26,6 +26,19 @@ export const updateRouter = createTRPCRouter({
       });
       return 'Success'
     }),
+    updateEmployeeStatus: publicProcedure
+    .input(z.object({ id: z.number(), status: z.boolean()}))
+    .mutation( async ({ ctx, input }) => {
+        await ctx.db.employees.update({
+        data: {
+          status: input.status,
+        },
+        where: {
+            id: input.id
+        }
+      });
+      return 'Success'
+    }),
    updateEmployeeManagerLink: publicProcedure
    .input(z.object({EmployeeId: z.number(), managerId: z.number()}))
    .mutation( async({ctx, input}) => {
@@ -57,6 +70,18 @@ export const updateRouter = createTRPCRouter({
     await ctx.db.departments.update({
       data: {
         name: input.name,
+        status: input.status
+      },
+      where: {
+        id: input.id
+      }
+    })
+   }),
+   updateDepartmentStatus: publicProcedure
+   .input(z.object({id: z.number(), status: z.boolean()}))
+   .mutation(async({ctx, input}) => {
+    await ctx.db.departments.update({
+      data: {
         status: input.status
       },
       where: {

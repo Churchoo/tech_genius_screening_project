@@ -3,16 +3,6 @@ import Grid2 from '@mui/material/Unstable_Grid2'
 import { api } from 'ernst_stephen_fischer/trpc/react'
 import React, { useState } from 'react'
 
-interface Employee {
-    id: number,
-    firstName: string,
-    lastName: string,
-    telephoneNumber: string,
-    emailAddress: string,
-    status: boolean,
-    role: string
-}
-
 interface Departments {
     id: number,
     name: string,
@@ -45,12 +35,27 @@ interface CreateDepartment {
     manager: Manager
 }
 
+interface Employees {
+    id: number,
+    firstName: string,
+    lastName: string,
+    telephoneNumber: string,
+    emailAddress: string,
+    password: string,
+    status: boolean,
+    role: string
+}
+
+
 interface Props {
     DepartmentData: DepartmentsTable,
     manager: Manager[],
     edit: boolean,
     addData(data: DepartmentsTable): void,
-    exit(): void
+    user: Employees,
+    exit(): void,
+    viewDepartment(): void,
+    viewEmployees(): void
 }
 const Department_Edit_Create = (props: Props) => {
     const StatusOptions = ["Active", 'Inactive']
@@ -116,43 +121,48 @@ const Department_Edit_Create = (props: Props) => {
                 <Grid2 container spacing={3} >
                     <Grid2 xs='auto' >
                         <Box
-                            height={'34.3vh'}
+                            height={'11vh'}
                             width={'20vh'}
-                            display="grid"
+                            display={'grid'}
+                            alignItems={'center'}
                             sx={{ border: '2px solid grey' }}>
-                            <Typography> Menu </Typography>
+                            <Typography sx={{ paddingLeft: '38%' }}> Menu </Typography>
+                            <Button variant='text' color='inherit' onClick={() => props.viewDepartment()} > View Department</Button>
+                            <Button variant='text' color='inherit' onClick={() => props.viewEmployees()} > View Employees</Button>
                         </Box>
                     </Grid2>
                     <Grid2 xs='auto' >
                         <Typography sx={{ paddingBottom: '2%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%' }}> Name </Typography>
-                            <TextField value={departmentName} error={error&&departmentName===""} helperText={error && departmentName==="" ? "Enter Department Name" : ""} onChange={(e) => setDepartmentName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <Typography sx={{ padding: '5%', paddingRight: '5vh' }}> Name </Typography>
+                            <TextField value={departmentName} error={error && departmentName === ""} helperText={error && departmentName === "" ? "Enter Department Name" : ""} onChange={(e) => setDepartmentName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div>
-                            <div style={{ display: 'flex' }}>
-                                <Typography> Manager </Typography>
+                            <div style={{ display: 'flex', paddingTop: '2vh' }}>
+                                <Typography sx={{ padding: '5%', paddingRight: '2.1vh' }}> Manager </Typography>
                                 <Autocomplete
                                     disablePortal
+                                    disabled={props.user.role!=='Manager'}
                                     options={props.manager}
                                     getOptionLabel={(options) => options.managerName}
                                     sx={{ width: 300, paddingLeft: '5%' }}
-                                    renderInput={(params) => <TextField {...params} label="Select Manager" error={error&&manager===undefined}/>}
                                     value={manager}
                                     onChange={(e, value) => {
                                         if (value !== null)
                                             setManager(value)
                                     }}
+                                    renderInput={(params) => <TextField {...params} label="Select Manager" error={error && manager === undefined} />}
+
                                 />
                             </div>
-                            <div style={{ display: 'flex' }}>
-                                <Typography> Status </Typography>
+                            <div style={{ display: 'flex', paddingTop: '3vh' }}>
+                                <Typography sx={{ padding: '5%', paddingRight: '3.9vh' }}> Status </Typography>
                                 <Autocomplete
                                     disablePortal
                                     options={StatusOptions}
                                     value={getStatusValue()}
                                     sx={{ width: 300, paddingLeft: '5%' }}
-                                    renderInput={(params) => <TextField {...params} variant='standard' label="Select Active/Inactive" />}
+                                    renderInput={(params) => <TextField {...params} label="Select Active/Inactive" />}
                                     onChange={(e, v) => {
                                         if (v === 'Active') {
                                             setStatus(true)
@@ -164,14 +174,16 @@ const Department_Edit_Create = (props: Props) => {
                                 />
                             </div>
                         </div>
-                        <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
-                            checkData()
-                        }}>
-                            save
-                        </Button>
-                        <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%', right: '-10%' }} onClick={() => props.exit()}>
-                            cancel
-                        </Button>
+                        <div style={{ paddingTop: '2vh' }}>
+                            <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
+                                checkData()
+                            }}>
+                                save
+                            </Button>
+                            <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%', right: '-10%' }} onClick={() => props.exit()}>
+                                cancel
+                            </Button>
+                        </div>
                     </Grid2>
                 </Grid2>
             </div>

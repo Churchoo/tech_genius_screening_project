@@ -14,6 +14,19 @@ interface Employee {
     role: string
 }
 
+interface EmployeeManager {
+    id: number,
+    firstName: string,
+    lastName: string,
+    telephoneNumber: string,
+    emailAddress: string,
+    password: string,
+    status: boolean,
+    role: string,
+    manager: Manager
+}
+
+
 interface EmployeesLink {
     id: number,
     firstName: string,
@@ -43,12 +56,13 @@ interface Manager {
 }
 
 interface Props {
-    employeeData: Employee,
+    employeeData: EmployeeManager,
     employees: Employee[]
     manager: Manager[],
     edit: boolean,
     addData(data: Employee): void,
     addDataManager(data: EmployeesLink): void,
+    viewDepartment(): void,
     exit(): void
 }
 const Employee_Edit_Create = (props: Props) => {
@@ -58,7 +72,7 @@ const Employee_Edit_Create = (props: Props) => {
     const [telephoneNumber, setTelephoneNumber] = useState(props.employeeData.telephoneNumber)
     const [emailAddress, setEmailAddress] = useState(props.employeeData.emailAddress)
     const [error, setError] = useState(false)
-    const [manager, setManager] = useState<Manager>()
+    const [manager, setManager] = useState<Manager>(props.employeeData.manager)
     const [status, setStatus] = useState(props.employeeData.status)
     const getStatusValue = () => {
         if (status) {
@@ -150,41 +164,47 @@ const Employee_Edit_Create = (props: Props) => {
             <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
                 <Grid2 container spacing={3} >
                     <Grid2 xs='auto' >
+                    <div>
                         <Box
-                            height={'34.3vh'}
+                            height={'11vh'}
                             width={'20vh'}
-                            display="grid"
+                            display={'grid'}
+                            alignItems={'center'}
                             sx={{ border: '2px solid grey' }}>
-                            <Typography> Menu </Typography>
+                            <Typography sx={{ paddingLeft: '38%' }}> Menu </Typography>
+                            <Button variant='text' color='inherit' onClick={() => props.viewDepartment()}> View Departments</Button>
+                            <Button variant='text' color='inherit' onClick={() => props.exit()}> View Employee</Button>
                         </Box>
+                    </div>
                     </Grid2>
                     <Grid2 xs='auto' sx={{width: '70vh'}}>
-                        <Typography sx={{ paddingBottom: '2%' }}> Create / Edit Employee </Typography>
+                        <Typography variant='h4' sx={{ paddingBottom: '1%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%', paddingRight: '10vh' }}> First Name </Typography>
+                            <Typography sx={{ padding: '5%', paddingRight: '10vh' }} variant='h6'> First Name </Typography>
                             <TextField value={firstName} error={error&&firstName===""} helperText={error && firstName==="" ? "Enter First Name" : ""} onChange={(e) => setFirstName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%', paddingRight: '10vh' }}> Last Name </Typography>
+                            <Typography sx={{ padding: '5%', paddingRight: '10vh' }} variant='h6'> Last Name </Typography>
                             <TextField value={lastName} error={error&&lastName===""} helperText={error && lastName==="" ? "Enter Last Name" : ""} onChange={(e) => setLastName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%' , paddingRight: '4vh'}}> Telephone Number </Typography>
+                            <Typography sx={{ padding: '5%' , paddingRight: '2.5vh'}} variant='h6'> Telephone Number </Typography>
                             <TextField value={telephoneNumber} error={error&&telephoneNumber===""} helperText={error && telephoneNumber==="" ? "Enter Telephone Number" : ""} onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%',  paddingRight: '7vh' }}> Email Address </Typography>
+                            <Typography sx={{ padding: '5%',  paddingRight: '6.7vh' }} variant='h6'> Email Address </Typography>
                             <TextField value={emailAddress} error={error&&telephoneNumber===""} helperText={error && firstName==="" ? "Enter Email Address" : ""} onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
                         </div>
                         {props.edit &&
                             <div>
-                                <div style={{ display: 'flex' }}>
-                                    <Typography> Manager </Typography>
+                                <div style={{ display: 'flex', paddingLeft: '5%', paddingTop: '2vh' }}>
+                                    <Typography variant='h6'> Manager </Typography>
                                     <Autocomplete
                                         disablePortal
                                         options={props.manager}
                                         getOptionLabel={(options) => options.managerName}
-                                        sx={{ width: 300, paddingLeft: '5%' }}
+                                        value={manager}
+                                        sx={{ width: '40vh', paddingLeft: '13.7vh' }}
                                         renderInput={(params) => <TextField {...params} label="Select Manager" />}
                                         onChange={(e, value) => {
                                             if (value)
@@ -192,14 +212,15 @@ const Employee_Edit_Create = (props: Props) => {
                                         }}
                                     />
                                 </div>
-                                <div style={{ display: 'flex' }}>
-                                    <Typography> Status </Typography>
+                                <div style={{ display: 'flex', paddingLeft: '5%', paddingTop: '4vh' }}>
+                                    <Typography variant='h6'> Status </Typography>
                                     <Autocomplete
                                         disablePortal
                                         options={StatusOptions}
+                                        
                                         value={getStatusValue()}
-                                        sx={{ width: 300, paddingLeft: '5%' }}
-                                        renderInput={(params) => <TextField {...params} variant='standard' label="Select Active/Inactive" />}
+                                        sx={{ width: '42vh', paddingLeft: '16vh' }}
+                                        renderInput={(params) => <TextField {...params} label="Select Active/Inactive" />}
                                         onChange={(e, v) => {
                                             if (v === 'Active') {
                                                 setStatus(true)
@@ -212,6 +233,7 @@ const Employee_Edit_Create = (props: Props) => {
                                 </div>
                             </div>
                         }
+                        <div style={{paddingTop: '2vh'}}>
                         <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
                             checkData({ id: getId(), firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role, password: "Password123#" })
                         }}>
@@ -220,6 +242,7 @@ const Employee_Edit_Create = (props: Props) => {
                         <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%', right: '-10%' }} onClick={() => props.exit()}>
                             cancel
                         </Button>
+                        </div>
                     </Grid2>
                 </Grid2>
             </div>
