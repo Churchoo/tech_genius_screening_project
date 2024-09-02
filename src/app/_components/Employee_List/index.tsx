@@ -133,7 +133,7 @@ const Employee_List = (props: Props) => {
             return "Active"
         return "Inactive"
     }
-    //Creates the table data
+    //Creates the table data by adding manager to the employees database
     const TableData = () => {
         if (employeeData.length > 0) {
             const data = employeeData
@@ -270,12 +270,11 @@ const Employee_List = (props: Props) => {
             }
         }
     }
-
+// this adds the employees to the table without calling to get Information from the database an additional time
     const addEmployeeData = async (data: Employees) => {
         const newData = employeeData
         if (!edit) {
             newData.push(data)
-            props.addEmployeeData(newData)
             updateEmployeeData(newData)
         }
         else {
@@ -284,7 +283,6 @@ const Employee_List = (props: Props) => {
                 const changedData = newData.filter(value => value.id !== data.id)
                 changedData.splice(index, 0, data)
                 updateEmployeeData(changedData)
-                props.addEmployeeData(changedData)
                 setEditedEmployeeData(changedData)
             }
         }
@@ -292,10 +290,12 @@ const Employee_List = (props: Props) => {
         setCreate(false)
         setFilter(false)
     }
-
+    //this i
     const updateEmployeeData = (data: Employees[]) => {
-        setEmployeeData(data,)
+        setEmployeeData(data)
+        props.addEmployeeData(data)
     }
+    // this adds a link on the table between manager and employer without needing to get information from the database again
     const addemployeeManagerLink = (data: EmployeesLink) => {
         const link = employeeManagerLink
         link.push({ id: 100, EmployeeId: data.id, managerId: data.managerId })
@@ -304,7 +304,7 @@ const Employee_List = (props: Props) => {
         addEmployeeData(data)
         setEdit(false)
     }
-
+//this changes the status of a user on the table
     const changeStatus = (id: number) => {
         const newData = employeeData.filter(value => value.id !== id)
         const index = employeeData.findIndex(value => value.id === id)
@@ -347,13 +347,12 @@ const Employee_List = (props: Props) => {
             }
         }
     }
-
-
-
+    //this function reserts the filter of employees in the table
     const Reset = () => {
         setFilteredData(employeeTableData)
         setFilter(false)
     }
+    //this prevents getting trying to set the table data over and over
     if (!getTableData) {
         TableData();
     }
@@ -448,7 +447,7 @@ const Employee_List = (props: Props) => {
                             sx={{ border: '2px solid grey' }}>
                             <Typography sx={{ paddingLeft: '38%', fontSize: 20 }}> Menu </Typography>
                             <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => props.viewDepartment()} disabled={props.user.role === 'Employee'}> View Departments</Button>
-                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => setCreate(true)} disabled={props.user.role === 'Employee'}> Add Employee</Button>
+                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => setCreate(true)} disabled={props.user.role !== 'HRAdmin'}> Add Employee</Button>
                         </Box>
                     </div>
                     <Grid2 xs='auto' sx={{ paddingTop: '4.5vh' }} >

@@ -6,7 +6,8 @@ import {
   publicProcedure,
 } from "ernst_stephen_fischer/server/api/trpc";
 
-export const InsertRouter = createTRPCRouter({
+//all the create procedures I needed 
+export const createRouter = createTRPCRouter({
   insertEmployees: publicProcedure
     .input(z.object({ firstName: z.string(), lastName: z.string(), telephoneNumber: z.string(), emailAddress: z.string(), password: z.string(), status: z.boolean(), role: z.string() }))
     .mutation(async ({ ctx, input }) => {

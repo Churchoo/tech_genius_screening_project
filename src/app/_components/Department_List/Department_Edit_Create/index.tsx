@@ -3,12 +3,6 @@ import Grid2 from '@mui/material/Unstable_Grid2'
 import { api } from 'ernst_stephen_fischer/trpc/react'
 import React, { useState } from 'react'
 
-interface Departments {
-    id: number,
-    name: string,
-    status: boolean
-}
-
 interface DepartmentsTable {
     id: number,
     name: string,
@@ -81,6 +75,15 @@ const Department_Edit_Create = (props: Props) => {
         }
     }
 
+    const getManager = () => {
+        if (props.user.role === "Manager") {
+            const data = props.manager.filter(value => value.emailAddress === props.user.emailAddress)
+            if (data) {
+                return data
+            }
+        }
+        return props.manager
+    }
     const getStatusValue = () => {
         if (status)
             return "Active"
@@ -135,14 +138,14 @@ const Department_Edit_Create = (props: Props) => {
                         <Typography sx={{ paddingBottom: '2%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '5vh' }}> Name </Typography>
-                            <TextField value={departmentName} error={error && departmentName === ""} helperText={error && departmentName === "" ? "Enter Department Name" : ""} onChange={(e) => setDepartmentName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <TextField value={departmentName} error={error && departmentName === ""} helperText={error && departmentName === "" ? "Enter Department Name" : ""} onChange={(e) => setDepartmentName(e.target.value)} sx={{ width: '32.7vh', padding: '3%' }} />
                         </div>
                         <div>
                             <div style={{ display: 'flex', paddingTop: '2vh' }}>
                                 <Typography sx={{ padding: '5%', paddingRight: '2.1vh' }}> Manager </Typography>
                                 <Autocomplete
                                     disablePortal
-                                    options={props.manager}
+                                    options={getManager()}
                                     getOptionLabel={(options) => options.managerName}
                                     sx={{ width: 300, paddingLeft: '5%' }}
                                     value={manager}
@@ -159,6 +162,7 @@ const Department_Edit_Create = (props: Props) => {
                                 <Autocomplete
                                     disablePortal
                                     options={StatusOptions}
+                                    disabled={props.user.role !== "HRAdmin"}
                                     value={getStatusValue()}
                                     sx={{ width: 300, paddingLeft: '5%' }}
                                     renderInput={(params) => <TextField {...params} label="Select Active/Inactive" />}

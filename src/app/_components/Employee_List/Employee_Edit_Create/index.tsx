@@ -39,16 +39,6 @@ interface EmployeesLink {
     managerId: number
 }
 
-interface CreateEmployee {
-    firstName: string,
-    lastName: string,
-    telephoneNumber: string,
-    emailAddress: string,
-    password: string,
-    status: boolean,
-    role: string
-}
-
 interface Manager {
     id: number,
     managerName: string,
@@ -66,6 +56,7 @@ interface Props {
     exit(): void
     user: Employee
 }
+
 const Employee_Edit_Create = (props: Props) => {
     const StatusOptions = ["Active", 'Inactive']
     const [firstName, setFirstName] = useState(props.employeeData.firstName)
@@ -94,6 +85,7 @@ const Employee_Edit_Create = (props: Props) => {
             return props.employees.length
         }
     }
+    //this function checks that all the required data has in put in to create an employee
     const checkData = (data: Employee) => {
         if(data.firstName===""||data.lastName===""||data.telephoneNumber===""||data.emailAddress===""){
             setError(true)
@@ -106,7 +98,7 @@ const Employee_Edit_Create = (props: Props) => {
             } 
         }
     }
-
+//this updates data in the database
     const EditEmployeeDetails = (data: Employee) => {
         if (data.role === 'Manager') {
             ManagerEdit.mutate({ managerName: data.firstName + " " + data.lastName, oldEmail: props.employeeData.emailAddress, newEmail: data.emailAddress })
@@ -128,7 +120,7 @@ const Employee_Edit_Create = (props: Props) => {
         }
         props.addData(data)
     }
-
+    //this insterts data into the database
     const CreateEmployee = (data: Employee) => {
         createEmployee.mutate({firstName: data.firstName, lastName: data.lastName, telephoneNumber: data.telephoneNumber, emailAddress: data.emailAddress, password: "Password123#", status: data.status, role: "Employee"})
         props.addData({    

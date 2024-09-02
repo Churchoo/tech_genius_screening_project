@@ -57,11 +57,13 @@ const Navigation = () => {
     const allManagers = api.get.getAllManager.useQuery().data
     const managerEmployeesLink = api.get.getManagerEmployeesLink.useQuery().data
     const managerDepartmentLink = api.get.getDepartmentManagerLink.useQuery().data
+    //this function saves the user data to check what permissions the user will have
     const setLoginData = (user: Employees) => {
         setUser(user)
         setLoggedIn(true)
         handleSeeEmployees()
     }
+    // this checks that all the data has been collected from the database to make sure there are not too many calls to the database
     if (!getData && employees && allDepartment && allManagers && managerEmployeesLink && managerDepartmentLink) {
         setEmployeeData(employees.sort((a,b) => a.id > b.id ? 1 : -1))
         setManagerData(allManagers.sort((a,b) => a.id > b.id ? 1 : -1))
@@ -70,6 +72,7 @@ const Navigation = () => {
         setEmployeeMangerLink(managerEmployeesLink)
         setGetData(true)
     }
+    
     const handleSeeEmployees = () => {
         setViewEmployees(!viewEmployees)
     }

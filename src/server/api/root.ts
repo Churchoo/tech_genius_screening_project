@@ -1,6 +1,6 @@
 import { getRouter } from "ernst_stephen_fischer/server/api/routers/Get";
 import { createCallerFactory, createTRPCRouter } from "ernst_stephen_fischer/server/api/trpc";
-import { InsertRouter } from "./routers/Insert"; 
+import { createRouter } from "./routers/Create"; 
 import { updateRouter } from "./routers/Update";
 
 /**
@@ -10,7 +10,7 @@ import { updateRouter } from "./routers/Update";
  */
 export const appRouter = createTRPCRouter({
   get: getRouter,
-  insert: InsertRouter,
+  insert: createRouter,
   update: updateRouter,
 });
 

@@ -24,6 +24,7 @@ const Login = (props: Props) => {
     const [error, setError] = useState(false)
     const [add, setAdd] = useState(false)
     const employee = api.get.getEmployees.useQuery().data
+    //this function checks the login details and logs the user in if the details are correct.
     const LoggingIn = () => {
         const index = employee?.findIndex((value) => value.emailAddress === userName && value.password === password)
         if (userName === "hradmin@test.com" && password === "TestPass1234") {
@@ -34,15 +35,11 @@ const Login = (props: Props) => {
             if (element) {
                 props.User(element)
             } else {
-                console.log(error)
                 setError(true)
             }
         }
     }
-    // if(!add){
-    //     setAdd(true)
-    //     AddEmployee()
-    // }
+
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '18vh' }}>
             <Box

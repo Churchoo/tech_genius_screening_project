@@ -68,7 +68,7 @@ const Department_List = (props: Props) => {
     const [editDepartment, setEditDepartment] = useState(false)
     const [createDepartment, setCreateDepartment] = useState(false)
     const [getData, setGetData] = useState(false)
-
+    
     const updateDepartmentStatus = api.update.updateDepartmentStatus.useMutation()
     // this gets all the departments the manager is in charge of
     const getSpecificDepartmentsData = () => {
@@ -150,11 +150,11 @@ const Department_List = (props: Props) => {
             }
         }
     }
-
+    //this prevents the table data tring to be retrieved over and over
     if (!getTableData) {
         createDepartmentTableData()
     }
-
+    //this exits the create/edit page
     const exit = () => {
         setEditDepartment(false)
         setCreateDepartment(false)
@@ -223,7 +223,7 @@ const Department_List = (props: Props) => {
         setDepartmentData(newData)
         setChangedData(newData)
     }
-
+    //compares arrays
     const compareArrays = (a: Departments[], b: Departments[]) => {
         return JSON.stringify(a) === JSON.stringify(b);
     };
@@ -295,8 +295,8 @@ const Department_List = (props: Props) => {
                             alignItems={'center'}
                             sx={{ border: '2px solid grey' }}>
                             <Typography sx={{ paddingLeft: '38%', fontSize: 20 }}> Menu </Typography>
-                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => setCreateDepartment(true)} > Add Department</Button>
-                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => props.viewEmployees()} disabled={props.user.role === 'Employee'}> View Employees</Button>
+                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => setCreateDepartment(true)} disabled={props.user.role!=="HRAdmin"} > Add Department</Button>
+                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => props.viewEmployees()} disabled={props.user.role === "Employee"}> View Employees</Button>
                         </Box>
                     </div>
                     <div style={{ display: 'flex', paddingTop: '0.2vh', paddingLeft: '2%' }}>
@@ -334,7 +334,7 @@ const Department_List = (props: Props) => {
                         </Grid2>
                     </div>
                     <div style={{ width: '130vh', display: 'flex', justifyContent: 'center', flexDirection: 'column', paddingLeft: '21vh' }}>
-                        <Department_Table changeStatus={(id) => changeStatus(id)} departmentData={departmentFilter ? tableFilteredData : tableData} editDepartment={(data) => editDepartmentSetup(data)} />
+                        <Department_Table user={props.user} changeStatus={(id) => changeStatus(id)} departmentData={departmentFilter ? tableFilteredData : tableData} editDepartment={(data) => editDepartmentSetup(data)} />
                     </div>
                 </Grid2>
             </div>
