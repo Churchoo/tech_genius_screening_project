@@ -163,22 +163,22 @@ const EmployeeTable = (props: Props) => {
               <Button startIcon={<EditIcon/>} disabled={props.user.role==='Manager' && props.user.id !== row.id} onClick={() => props.editEmployee(row)}/>
               <Button variant='text' disabled={props.user.role==='Employee'} onClick={() => props.changeStatus(row.id)} >{row.status ? 'Deactivate' : 'activate'}</Button>
               </TableCell>
-              <TableCell style={{ width: 150 }}  align="left">
+              <TableCell style={{ width: 150 }} sx={{fontSize: 18}}  align="left">
                 {row.firstName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 160 }} sx={{fontSize: 18}} align="left">
                 {row.lastName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 160 }} sx={{fontSize: 18}} align="left">
                 {row.telephoneNumber}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 160 }} sx={{fontSize: 18}} align="left">
                 {row.emailAddress}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 160 }} sx={{fontSize: 18}} align="left">
                 {row.manager.managerName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 160 }} sx={{fontSize: 18}} align="left">
                 {row.status ? 'Active' : 'Inactive'}
               </TableCell>
             </TableRow>

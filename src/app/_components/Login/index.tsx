@@ -27,8 +27,8 @@ const Login = (props: Props) => {
     const employee = api.get.getEmployees.useQuery().data
     const LoggingIn = () => {
         const index = employee?.findIndex((value) => value.emailAddress === userName && value.password === password)
-        if (userName === "a") {
-            if (password === "a") {
+        if (userName === "hradmin@test.com") {
+            if (password === "TestPass1234") {
                 props.User({ id: 0, firstName: '', lastName: '', telephoneNumber: '', emailAddress: '', password: '', status: false, role: 'Super' })
             }
         }
@@ -63,19 +63,22 @@ const Login = (props: Props) => {
                 sx={{ border: '2px solid grey', alignSelf: 'center' }}
                 autoComplete='off'
             >
-                <Typography variant='h4' >Login </Typography>
-                <Typography sx={{ textAlign: 'left' }} >User name </Typography>
+                <Typography variant='h3' >Login </Typography>
+                <Typography sx={{ textAlign: 'left' }} variant='h5' >User name </Typography>
                 <TextField required error={error} value={userName} helperText={error ? "incorrect login details": ""} label="Username" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setUserName(e.target.value)
                     setError(false)
-                }
-                } sx={{ width: "80%" }} />
-                <Typography >Password </Typography>
+                }} sx={{ width: "80%" }}
+                inputProps={{style: {fontSize: 24}}}
+                InputLabelProps={{style: {fontSize: 26}}} />
+                <Typography variant='h5' >Password </Typography>
                 <TextField required error={error} helperText={error ? "incorrect login details": ""} type='password' value={password} label="Password" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.target.value)
                     setError(false)
                 }
-                } sx={{ width: "80%" }} />
+                } sx={{ width: "80%" }} 
+                inputProps={{style: {fontSize: 24}}}
+                InputLabelProps={{style: {fontSize: 26}}} />
                 <Button variant='outlined' color='inherit' onClick={() => LoggingIn()}>
                     Login
                 </Button>

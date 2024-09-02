@@ -61,7 +61,6 @@ const Navigation = () => {
         setUser(user)
         setLoggedIn(true)
         handleSeeEmployees()
-        const Session = getServerSession()
     }
     if (!getData && employees && allDepartment && allManagers && managerEmployeesLink && managerDepartmentLink) {
         setEmployeeData(employees.sort((a,b) => a.id > b.id ? 1 : -1))

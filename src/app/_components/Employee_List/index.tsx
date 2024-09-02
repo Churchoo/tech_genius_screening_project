@@ -434,20 +434,20 @@ const Employee_List = (props: Props) => {
                 <Grid2 container spacing={3} >
                     <div style={{ paddingTop: '4.5vh' }}>
                         <Box
-                            height={'11vh'}
-                            width={'20vh'}
+                            height={'15vh'}
+                            width={'30vh'}
                             display={'grid'}
                             alignItems={'center'}
                             sx={{ border: '2px solid grey' }}>
-                            <Typography sx={{ paddingLeft: '38%' }}> Menu </Typography>
-                            <Button variant='text' color='inherit' onClick={() => props.viewDepartment()} disabled={props.user.role === 'Employee'}> View Departments</Button>
-                            <Button variant='text' color='inherit' onClick={() => setCreate(true)} disabled={props.user.role === 'Employee'}> Add Employee</Button>
+                            <Typography sx={{ paddingLeft: '38%', fontSize: 20 }}> Menu </Typography>
+                            <Button variant='text' color='inherit' sx={{fontSize: 20}} onClick={() => props.viewDepartment()} disabled={props.user.role === 'Employee'}> View Departments</Button>
+                            <Button variant='text' color='inherit' sx={{fontSize: 20}} onClick={() => setCreate(true)} disabled={props.user.role === 'Employee'}> Add Employee</Button>
                         </Box>
                     </div>
                     <Grid2 xs='auto' sx={{ paddingTop: '4.5vh' }} >
                         <Box
-                            height={'30vh'}
-                            width={'40vh'}
+                            height={'40vh'}
+                            width={'45vh'}
                             display={'grid'}
                             alignItems={'center'}
                             flex={'wrap'}
@@ -459,7 +459,7 @@ const Employee_List = (props: Props) => {
                                 disabled={props.user.role === 'Employee'}
                                 disablePortal
                                 options={StatusOptions}
-                                sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
+                                sx={{ width: '40vh', paddingLeft: '5%', paddingTop: '1%' }}
                                 value={getStatusValue()}
                                 onChange={(event, value) => {
                                     if (value === 'Active') {
@@ -468,35 +468,38 @@ const Employee_List = (props: Props) => {
                                         setFilterStatus(false)
                                     }
                                 }}
-                                renderInput={(params) => <TextField {...params} label="Active/Inactive Status" />}
+                                renderInput={(params) => <TextField {...params}
+                                InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Active/Inactive Status" />}
                             />
                             <Autocomplete
                                 disabled={props.user.role === 'Employee'}
                                 disablePortal
                                 options={props.allDepartment}
                                 getOptionLabel={(value) => value.name}
-                                sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
+                                sx={{ width: '40vh', paddingLeft: '5%', paddingTop: '1%' }}
                                 value={filterDepartment}
                                 onChange={(event, value) => {
                                     if (value) {
                                         setFilterDepartment(value)
                                     }
                                 }}
-                                renderInput={(params) => <TextField {...params} label="select Department" />}
+                                renderInput={(params) => <TextField {...params} 
+                                InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="select Department" />}
                             />
                             <Autocomplete
                                 disabled={props.user.role === 'Employee'}
                                 disablePortal
                                 options={props.allManagers}
                                 getOptionLabel={(value) => value.managerName}
-                                sx={{ width: '30vh', paddingLeft: '5%', paddingTop: '1%' }}
+                                sx={{ width: '40vh', paddingLeft: '5%', paddingTop: '1%' }}
                                 value={filterManager}
                                 onChange={(event, value) => {
                                     if (value) {
                                         setFilterManager(value)
                                     }
                                 }}
-                                renderInput={(params) => <TextField {...params} label="select Manager" />}
+                                renderInput={(params) => <TextField {...params} 
+                                InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="select Manager" />}
                             />
                             <Grid2 container spacing={-1} justifyContent={'space-between'} sx={{ width: '60%', paddingLeft: '20%' }}>
                                 <Button variant='outlined' color='inherit' sx={{ width: '15%' }} disabled={props.user.role === 'Employee'} onClick={() => filterEmployees()}>
@@ -508,7 +511,7 @@ const Employee_List = (props: Props) => {
                             </Grid2>
                         </Box>
                     </Grid2>
-                    <div style={{ width: '170vh', display: 'flex', justifyContent: 'center', flexDirection: 'column', paddingLeft: '21vh' }}>
+                    <div style={{ width: '98%', display: 'flex', justifyContent: 'center', flexDirection: 'column', paddingLeft: '10vh' }}>
                         {getTableData && <EmployeeTable changeStatus={(id) => changeStatus(id)} employeeData={filter ? filteredData : employeeTableData}
                             user={props.user} editEmployee={(data) => {
                                 setEditEmployeeData(data)
