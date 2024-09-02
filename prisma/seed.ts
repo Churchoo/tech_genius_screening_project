@@ -129,158 +129,43 @@ const employeeData: CreateEmployee[] = [
         role: 'Employee'
     },
 ]
+
+const departments: Departments[] = [
+    {
+        name: "Software Department",
+        status: true
+    },
+    {
+        name: "Sales Department",
+        status: true
+    },
+    {
+        name: "Development Department",
+        status: false
+    },
+    {
+        name: "Testing Department",
+        status: true
+    },
+    {
+        name: "Security Department",
+        status: true
+    },
+    {
+        name: "Executive Department",
+        status: false
+    },
+    {
+        name: "On Site Department",
+        status: true
+    },
+    {
+        name: "Training Department",
+        status: true
+    }
+]
 const prisma = new PrismaClient();
 async function main() {
-    // const [employeeData, setEmployeeData] = useState<any>()
-    // const getEmployeeInfo = async () => {
-    //     const employees = await api.get.getEmployees.useQuery().data
-    //     setEmployeeData(employees)
-    // }
-
-    // const employeeData: CreateEmployee[] = [
-    //     {
-    //         firstName: "Steven",
-    //         lastName: "Johnson",
-    //         telephoneNumber: '+2712-345-6789',
-    //         emailAddress: 'stevejohnson@gmail.com',
-    //         password: "Password123#",
-    //         status: true,
-    //         role: 'Manager'
-    //     },
-    //     {
-    //         firstName: "Jack",
-    //         lastName: "Johnson",
-    //         telephoneNumber: '+2712-345-6789',
-    //         emailAddress: 'jackjohnson@gmail.com',
-    //         password: "Password123#",
-    //         status: true,
-    //         role: 'Employee'
-    //     },
-    //     {
-    //         firstName: "Steward",
-    //         lastName: "Jack",
-    //         telephoneNumber: '+2712-479-9876',
-    //         emailAddress: 'stewardjack@gmail.com',
-    //         password: "Password123#",
-    //         status: false,
-    //         role: 'Manager'
-    //     },
-    //     {
-    //         firstName: "Steven",
-    //         lastName: "Jack",
-    //         telephoneNumber: '+2712-497-9876',
-    //         emailAddress: 'stevenjack@gmail.com',
-    //         password: "Password123#",
-    //         status: true,
-    //         role: 'Employee'
-    //     },
-    //     {
-    //         firstName: "Peter",
-    //         lastName: "Rock",
-    //         telephoneNumber: '+2712-842-9876',
-    //         emailAddress: 'peterrock@gmail.com',
-    //         password: "Password123#",
-    //         status: false,
-    //         role: 'Employee'
-    //     },
-    //     {
-    //         firstName: "Jacky",
-    //         lastName: "Chan",
-    //         telephoneNumber: '+2712-986-9876',
-    //         emailAddress: 'realjackychan@gmail.com',
-    //         password: "Password123#",
-    //         status: false,
-    //         role: 'Employee'
-    //     },
-    //     {
-    //         firstName: "Steven",
-    //         lastName: "Jackson",
-    //         telephoneNumber: '+2712-345-6789',
-    //         emailAddress: 'stevejackson@gmail.com',
-    //         password: "Password123#",
-    //         status: true,
-    //         role: 'Manager'
-    //     },
-    //     {
-    //         firstName: "Jack",
-    //         lastName: "Jackson",
-    //         telephoneNumber: '+2712-345-6789',
-    //         emailAddress: 'jackjackson@gmail.com',
-    //         password: "Password123#",
-    //         status: true,
-    //         role: 'Employee'
-    //     },
-    //     {
-    //         firstName: "Steward",
-    //         lastName: "Jack",
-    //         telephoneNumber: '+2712-479-4286',
-    //         emailAddress: 'stewardjack@gmail.com',
-    //         password: "Password123#",
-    //         status: false,
-    //         role: 'Manager'
-    //     },
-    //     {
-    //         firstName: "Steven",
-    //         lastName: "Jacky",
-    //         telephoneNumber: '+2712-497-7482',
-    //         emailAddress: 'stevenjacky@gmail.com',
-    //         password: "Password123#",
-    //         status: true,
-    //         role: 'Employee'
-    //     },
-    //     {
-    //         firstName: "Peter",
-    //         lastName: "Rocky",
-    //         telephoneNumber: '+2712-842-2468',
-    //         emailAddress: 'peterrocky@gmail.com',
-    //         password: "Password123#",
-    //         status: false,
-    //         role: 'Employee'
-    //     },
-    //     {
-    //         firstName: "Jackson",
-    //         lastName: "Chan",
-    //         telephoneNumber: '+2712-986-8462',
-    //         emailAddress: 'realjacksonchan@gmail.com',
-    //         password: "Password123#",
-    //         status: false,
-    //         role: 'Employee'
-    //     },
-    // ]
-    const departments: Departments[] = [
-        {
-            name: "Software Department",
-            status: true
-        },
-        {
-            name: "Sales Department",
-            status: true
-        },
-        {
-            name: "Development Department",
-            status: false
-        },
-        {
-            name: "Testing Department",
-            status: true
-        },
-        {
-            name: "Security Department",
-            status: true
-        },
-        {
-            name: "Executive Department",
-            status: false
-        },
-        {
-            name: "On Site Department",
-            status: true
-        },
-        {
-            name: "Training Department",
-            status: true
-        }
-    ]
     const doubleCheck: CreateEmployee[] = [] 
     const checkEmails: string[] = []
     for (let index = 0; index < 11; index++) {

@@ -91,7 +91,6 @@ const Employee_Edit_Create = (props: Props) => {
             return props.employeeData.id
         }
         else{
-            console.log(props.employees.length)
             return props.employees.length
         }
     }

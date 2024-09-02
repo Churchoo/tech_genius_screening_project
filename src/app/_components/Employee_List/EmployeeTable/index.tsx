@@ -110,7 +110,6 @@ interface TablePaginationActionsProps {
   }
   // this is the table that is created
 const EmployeeTable = (props: Props) => {
-  console.log(props.employeeData)
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
