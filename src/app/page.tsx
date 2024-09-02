@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { getServerAuthSession } from "ernst_stephen_fischer/server/auth";
-import { api, HydrateClient } from "ernst_stephen_fischer/trpc/server";
+import { HydrateClient } from "ernst_stephen_fischer/trpc/server";
 import Navigation from "./_components/Navigation";
-import { AddEmployee } from "./EmployeeData/AddEmployee";
 
 
 

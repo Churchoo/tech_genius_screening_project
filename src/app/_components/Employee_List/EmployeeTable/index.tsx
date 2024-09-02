@@ -6,6 +6,7 @@ import LastPageIcon from '@mui/icons-material/LastPage'
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import EditIcon from '@mui/icons-material/Edit';
+
 interface TablePaginationActionsProps {
     count: number;
     page: number;
@@ -15,7 +16,7 @@ interface TablePaginationActionsProps {
       newPage: number,
     ) => void;
   }
-
+  //this handles the Table Pagination buttons and selections
   const TablePaginationActions = (props: TablePaginationActionsProps) => {
     const theme = useTheme();
     const { count, page, rowsPerPage, onPageChange } = props;
@@ -72,15 +73,6 @@ interface TablePaginationActionsProps {
     );
   }
 
-  // const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  //   [`&.${tableCellClasses.head}`]: {
-  //     backgroundColor: theme.palette.common.black,
-  //     color: theme.palette.common.white,
-  //   },
-  //   [`&.${tableCellClasses.body}`]: {
-  //     fontSize: 14,
-  //   },
-  // }));
   interface EmployeesData {
     id: number,
     firstName: string,
@@ -116,6 +108,7 @@ interface TablePaginationActionsProps {
     user: Employees,
     changeStatus(id: number): void
   }
+  // this is the table that is created
 const EmployeeTable = (props: Props) => {
   console.log(props.employeeData)
   const [page, setPage] = React.useState(0);
@@ -144,13 +137,13 @@ const EmployeeTable = (props: Props) => {
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
       <TableHead>
           <TableRow>
-            <TableCell align="left">Actions</TableCell>
-            <TableCell align="left">First Name</TableCell>
-            <TableCell align="left">Last Name</TableCell>
-            <TableCell align="left">Telephone Number</TableCell>
-            <TableCell align="left">Email Address</TableCell>
-            <TableCell align="left">Manager</TableCell>
-            <TableCell align="left">Status</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Actions</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">First Name</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Last Name</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Telephone Number</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Email Address</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Manager</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -161,7 +154,7 @@ const EmployeeTable = (props: Props) => {
             <TableRow key={row.id}>
               <TableCell style={{ width: 200 }}  align="left">
               <Button startIcon={<EditIcon/>} disabled={props.user.role==='Manager' && props.user.id !== row.id} onClick={() => props.editEmployee(row)}/>
-              <Button variant='text' disabled={props.user.role==='Employee'} onClick={() => props.changeStatus(row.id)} >{row.status ? 'Deactivate' : 'activate'}</Button>
+              <Button variant='text' disabled={props.user.role!=="HRAdmin"} onClick={() => props.changeStatus(row.id)} >{row.status ? 'Deactivate' : 'activate'}</Button>
               </TableCell>
               <TableCell style={{ width: 150 }} sx={{fontSize: 18}}  align="left">
                 {row.firstName}

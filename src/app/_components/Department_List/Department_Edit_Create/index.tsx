@@ -142,7 +142,6 @@ const Department_Edit_Create = (props: Props) => {
                                 <Typography sx={{ padding: '5%', paddingRight: '2.1vh' }}> Manager </Typography>
                                 <Autocomplete
                                     disablePortal
-                                    disabled={props.user.role!=='Manager'}
                                     options={props.manager}
                                     getOptionLabel={(options) => options.managerName}
                                     sx={{ width: 300, paddingLeft: '5%' }}

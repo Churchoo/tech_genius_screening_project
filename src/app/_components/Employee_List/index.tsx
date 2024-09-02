@@ -97,7 +97,7 @@ const Employee_List = (props: Props) => {
     const [employeeManagerLink, setEmployeeManagerLink] = useState<managerEmployeesLink[]>(props.managerEmployeesLink)
 
     const updateEmplyeeStatus = api.update.updateEmployeeStatus.useMutation()
-
+    //this filters the data depending on the role of the user
     const getSpecificEmployeeData = () => {
         setEmployeeData([props.user])
         if (props.user.role === 'Employee') {
@@ -223,7 +223,7 @@ const Employee_List = (props: Props) => {
             setGetTableData(true)
         }
     }
-
+    //this filters the employees according to the filters selected
     const filterEmployees = () => {
         if (filterStatus !== undefined) {
             const filteredEmployees = employeeTableData.filter((value) => value.status === filterStatus)
@@ -290,6 +290,7 @@ const Employee_List = (props: Props) => {
         }
         setEdit(false)
         setCreate(false)
+        setFilter(false)
     }
 
     const updateEmployeeData = (data: Employees[]) => {
@@ -356,15 +357,17 @@ const Employee_List = (props: Props) => {
     if (!getTableData) {
         TableData();
     }
+    //this is used to compare arrays
     const compareArrays = (a: any, b: any) => {
         return JSON.stringify(a) === JSON.stringify(b);
     };
+    // this ensures that the changes made to the data reflect correctly
     useEffect(() => {
         if (editedEmployeeData.length > 0) {
             if (compareArrays(editedEmployeeData, employeeData)) {
-                if (compareArrays(filteredDataCheck, filteredData)) {  
-                setGetTableData(false)
-            }
+                if (compareArrays(filteredDataCheck, filteredData)) {
+                    setGetTableData(false)
+                }
             }
         }
     },
@@ -373,7 +376,9 @@ const Employee_List = (props: Props) => {
     if (edit && editEmployeeData) {
         return (
             <div>
-                <Employee_Edit_Create employees={props.employees}
+                <Employee_Edit_Create
+                    user={props.user}
+                    employees={props.employees}
                     employeeData={editEmployeeData} edit={true} manager={props.allManagers}
                     addDataManager={(data: EmployeesLink) => addemployeeManagerLink(data)}
                     addData={(data: Employees) => addEmployeeData(data)} exit={() => setEdit(false)}
@@ -388,21 +393,23 @@ const Employee_List = (props: Props) => {
     if (create) {
         return (
             <div>
-                <Employee_Edit_Create employeeData={({
-                    id: 0,
-                    firstName: "",
-                    lastName: "",
-                    telephoneNumber: "",
-                    emailAddress: "",
-                    password: "Password123#",
-                    status: false,
-                    role: "Employee",
-                    manager: {
-                        id: -1,
+                <Employee_Edit_Create
+                    user={props.user}
+                    employeeData={({
+                        id: 0,
+                        firstName: "",
+                        lastName: "",
+                        telephoneNumber: "",
                         emailAddress: "",
-                        managerName: ""
-                    }
-                })} edit={false} employees={props.employees} addData={(data: Employees) => addEmployeeData(data)}
+                        password: "Password123#",
+                        status: false,
+                        role: "Employee",
+                        manager: {
+                            id: -1,
+                            emailAddress: "",
+                            managerName: ""
+                        }
+                    })} edit={false} employees={props.employees} addData={(data: Employees) => addEmployeeData(data)}
                     addDataManager={(data: EmployeesLink) => addemployeeManagerLink(data)}
                     manager={[]} exit={() => setCreate(false)}
                     viewDepartment={() => {
@@ -429,7 +436,7 @@ const Employee_List = (props: Props) => {
                     <Typography> HR Administration System</Typography>
                 </Box>
             </div>
-            <Typography variant='h4' sx={{ paddingLeft: '27vh' }}> Employee Details </Typography>
+            <Typography variant='h4' sx={{ paddingLeft: '34vh' }}> Employee Details </Typography>
             <div style={{ display: 'flex', paddingTop: '0.2vh', paddingLeft: '2%' }}>
                 <Grid2 container spacing={3} >
                     <div style={{ paddingTop: '4.5vh' }}>
@@ -440,8 +447,8 @@ const Employee_List = (props: Props) => {
                             alignItems={'center'}
                             sx={{ border: '2px solid grey' }}>
                             <Typography sx={{ paddingLeft: '38%', fontSize: 20 }}> Menu </Typography>
-                            <Button variant='text' color='inherit' sx={{fontSize: 20}} onClick={() => props.viewDepartment()} disabled={props.user.role === 'Employee'}> View Departments</Button>
-                            <Button variant='text' color='inherit' sx={{fontSize: 20}} onClick={() => setCreate(true)} disabled={props.user.role === 'Employee'}> Add Employee</Button>
+                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => props.viewDepartment()} disabled={props.user.role === 'Employee'}> View Departments</Button>
+                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => setCreate(true)} disabled={props.user.role === 'Employee'}> Add Employee</Button>
                         </Box>
                     </div>
                     <Grid2 xs='auto' sx={{ paddingTop: '4.5vh' }} >
@@ -454,7 +461,7 @@ const Employee_List = (props: Props) => {
                             gap={1}
                             sx={{ border: '2px solid grey' }}
                         >
-                             <Typography variant='h5'> Filters </Typography>
+                            <Typography variant='h5'> Filters </Typography>
                             <Autocomplete
                                 disabled={props.user.role === 'Employee'}
                                 disablePortal
@@ -469,7 +476,7 @@ const Employee_List = (props: Props) => {
                                     }
                                 }}
                                 renderInput={(params) => <TextField {...params}
-                                InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Active/Inactive Status" />}
+                                    InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Active/Inactive Status" />}
                             />
                             <Autocomplete
                                 disabled={props.user.role === 'Employee'}
@@ -483,11 +490,11 @@ const Employee_List = (props: Props) => {
                                         setFilterDepartment(value)
                                     }
                                 }}
-                                renderInput={(params) => <TextField {...params} 
-                                InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="select Department" />}
+                                renderInput={(params) => <TextField {...params}
+                                    InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="select Department" />}
                             />
                             <Autocomplete
-                                disabled={props.user.role === 'Employee'}
+                                disabled={props.user.role !== 'HRAdmin'}
                                 disablePortal
                                 options={props.allManagers}
                                 getOptionLabel={(value) => value.managerName}
@@ -498,8 +505,8 @@ const Employee_List = (props: Props) => {
                                         setFilterManager(value)
                                     }
                                 }}
-                                renderInput={(params) => <TextField {...params} 
-                                InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="select Manager" />}
+                                renderInput={(params) => <TextField {...params}
+                                    InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="select Manager" />}
                             />
                             <Grid2 container spacing={-1} justifyContent={'space-between'} sx={{ width: '60%', paddingLeft: '20%' }}>
                                 <Button variant='outlined' color='inherit' sx={{ width: '15%' }} disabled={props.user.role === 'Employee'} onClick={() => filterEmployees()}>

@@ -131,10 +131,10 @@ const Department_Table = (props: Props) => {
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
-            <TableCell align="left">Edit</TableCell>
-            <TableCell align="left">Name</TableCell>
-            <TableCell align="left">Manager</TableCell>
-            <TableCell align="left">Status</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Edit</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Name</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Manager</TableCell>
+            <TableCell sx={{fontSize: 18}} align="left">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -145,15 +145,15 @@ const Department_Table = (props: Props) => {
             <TableRow key={row.id}>
               <TableCell style={{ width: 200 }} align="left">
                 <Button startIcon={<EditIcon />} onClick={() => props.editDepartment(row)} />
-                <Button variant='text' onClick={() => props.changeStatus(row)} >{row.status ? 'Deactivate' : 'activate'}</Button>
+                <Button variant='text' sx={{fontSize: 18}} onClick={() => props.changeStatus(row)} >{row.status ? 'Deactivate' : 'activate'}</Button>
               </TableCell>
-              <TableCell style={{ width: 150 }} align="left">
+              <TableCell style={{ width: 150, fontSize: 18 }} align="left">
                 {row.name}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 160, fontSize: 18 }} align="left">
                 {row.manager.managerName}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
+              <TableCell style={{ width: 160, fontSize: 18 }} align="left">
                 {row.status ? 'Active' : 'Inactive'}
               </TableCell>
             </TableRow>

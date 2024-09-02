@@ -64,6 +64,7 @@ interface Props {
     addDataManager(data: EmployeesLink): void,
     viewDepartment(): void,
     exit(): void
+    user: Employee
 }
 const Employee_Edit_Create = (props: Props) => {
     const StatusOptions = ["Active", 'Inactive']
@@ -181,19 +182,25 @@ const Employee_Edit_Create = (props: Props) => {
                         <Typography variant='h4' sx={{ paddingBottom: '1%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '10vh' }} variant='h6'> First Name </Typography>
-                            <TextField value={firstName} error={error&&firstName===""} helperText={error && firstName==="" ? "Enter First Name" : ""} onChange={(e) => setFirstName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <TextField value={firstName} error={error&&firstName===""} helperText={error && firstName==="" ? "Enter First Name" : ""} 
+                            onChange={(e) => setFirstName(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '10vh' }} variant='h6'> Last Name </Typography>
-                            <TextField value={lastName} error={error&&lastName===""} helperText={error && lastName==="" ? "Enter Last Name" : ""} onChange={(e) => setLastName(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <TextField value={lastName} error={error&&lastName===""} helperText={error && lastName==="" ? "Enter Last Name" : ""} 
+                            onChange={(e) => setLastName(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%' , paddingRight: '2.5vh'}} variant='h6'> Telephone Number </Typography>
-                            <TextField value={telephoneNumber} error={error&&telephoneNumber===""} helperText={error && telephoneNumber==="" ? "Enter Telephone Number" : ""} onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <TextField value={telephoneNumber} error={error&&telephoneNumber===""} 
+                            helperText={error && telephoneNumber==="" ? "Enter Telephone Number" : ""} 
+                            onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%',  paddingRight: '6.7vh' }} variant='h6'> Email Address </Typography>
-                            <TextField value={emailAddress} error={error&&telephoneNumber===""} helperText={error && firstName==="" ? "Enter Email Address" : ""} onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '50%', padding: '3%' }} />
+                            <TextField value={emailAddress} error={error&&telephoneNumber===""} 
+                            helperText={error && firstName==="" ? "Enter Email Address" : ""} 
+                            onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
                         {props.edit &&
                             <div>
@@ -202,10 +209,12 @@ const Employee_Edit_Create = (props: Props) => {
                                     <Autocomplete
                                         disablePortal
                                         options={props.manager}
+                                        disabled={props.user.role!=="HRAdmin"}
                                         getOptionLabel={(options) => options.managerName}
                                         value={manager}
                                         sx={{ width: '40vh', paddingLeft: '13.7vh' }}
-                                        renderInput={(params) => <TextField {...params} label="Select Manager" />}
+                                        renderInput={(params) => <TextField {...params}
+                                        InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Select Manager" />}
                                         onChange={(e, value) => {
                                             if (value)
                                                 setManager(value)
@@ -217,10 +226,10 @@ const Employee_Edit_Create = (props: Props) => {
                                     <Autocomplete
                                         disablePortal
                                         options={StatusOptions}
-                                        
+                                        disabled={props.user.role!=="HRAdmin"}
                                         value={getStatusValue()}
                                         sx={{ width: '42vh', paddingLeft: '16vh' }}
-                                        renderInput={(params) => <TextField {...params} label="Select Active/Inactive" />}
+                                        renderInput={(params) => <TextField {...params} InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Select Active/Inactive" />}
                                         onChange={(e, v) => {
                                             if (v === 'Active') {
                                                 setStatus(true)

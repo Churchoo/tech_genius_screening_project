@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { api } from 'ernst_stephen_fischer/trpc/react';
-import { AddEmployee } from 'ernst_stephen_fischer/app/EmployeeData/AddEmployee';
 
 interface Employees {
     id: number,
@@ -27,13 +26,10 @@ const Login = (props: Props) => {
     const employee = api.get.getEmployees.useQuery().data
     const LoggingIn = () => {
         const index = employee?.findIndex((value) => value.emailAddress === userName && value.password === password)
-        if (userName === "hradmin@test.com") {
-            if (password === "TestPass1234") {
-                props.User({ id: 0, firstName: '', lastName: '', telephoneNumber: '', emailAddress: '', password: '', status: false, role: 'Super' })
-            }
+        if (userName === "hradmin@test.com" && password === "TestPass1234") {
+            props.User({ id: 0, firstName: '', lastName: '', telephoneNumber: '', emailAddress: '', password: '', status: false, role: 'HRAdmin' })
         }
         else if (index !== undefined && employee !== undefined) {
-            
             const element = employee[index]
             if (element) {
                 props.User(element)
@@ -41,7 +37,7 @@ const Login = (props: Props) => {
                 console.log(error)
                 setError(true)
             }
-        } 
+        }
     }
     // if(!add){
     //     setAdd(true)
@@ -65,20 +61,20 @@ const Login = (props: Props) => {
             >
                 <Typography variant='h3' >Login </Typography>
                 <Typography sx={{ textAlign: 'left' }} variant='h5' >User name </Typography>
-                <TextField required error={error} value={userName} helperText={error ? "incorrect login details": ""} label="Username" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                <TextField required error={error} value={userName} helperText={error ? "incorrect login details" : ""} label="Username" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setUserName(e.target.value)
                     setError(false)
                 }} sx={{ width: "80%" }}
-                inputProps={{style: {fontSize: 24}}}
-                InputLabelProps={{style: {fontSize: 26}}} />
+                    inputProps={{ style: { fontSize: 24 } }}
+                    InputLabelProps={{ style: { fontSize: 26 } }} />
                 <Typography variant='h5' >Password </Typography>
-                <TextField required error={error} helperText={error ? "incorrect login details": ""} type='password' value={password} label="Password" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                <TextField required error={error} helperText={error ? "incorrect login details" : ""} type='password' value={password} label="Password" onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.target.value)
                     setError(false)
                 }
-                } sx={{ width: "80%" }} 
-                inputProps={{style: {fontSize: 24}}}
-                InputLabelProps={{style: {fontSize: 26}}} />
+                } sx={{ width: "80%" }}
+                    inputProps={{ style: { fontSize: 24 } }}
+                    InputLabelProps={{ style: { fontSize: 26 } }} />
                 <Button variant='outlined' color='inherit' onClick={() => LoggingIn()}>
                     Login
                 </Button>

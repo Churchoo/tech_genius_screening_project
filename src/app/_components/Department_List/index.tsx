@@ -284,19 +284,19 @@ const Department_List = (props: Props) => {
                     <Typography> HR Administration System</Typography>
                 </Box>
             </div>
-            <Typography variant='h4' sx={{ paddingLeft: '27vh' }}> Departments </Typography>
+            <Typography variant='h4' sx={{ paddingLeft: '38vh' }}> Departments </Typography>
             <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
                 <Grid2 container spacing={3} >
                     <div style={{ paddingTop: '1.4vh' }}>
                         <Box
-                            height={'11vh'}
-                            width={'20vh'}
+                            height={'15vh'}
+                            width={'30vh'}
                             display={'grid'}
                             alignItems={'center'}
                             sx={{ border: '2px solid grey' }}>
-                            <Typography sx={{ paddingLeft: '38%' }}> Menu </Typography>
-                            <Button variant='text' color='inherit' onClick={() => setCreateDepartment(true)} > Add Department</Button>
-                            <Button variant='text' color='inherit' onClick={() => props.viewEmployees()} disabled={props.user.role === 'Employee'}> View Employees</Button>
+                            <Typography sx={{ paddingLeft: '38%', fontSize: 20 }}> Menu </Typography>
+                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => setCreateDepartment(true)} > Add Department</Button>
+                            <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => props.viewEmployees()} disabled={props.user.role === 'Employee'}> View Employees</Button>
                         </Box>
                     </div>
                     <div style={{ display: 'flex', paddingTop: '0.2vh', paddingLeft: '2%' }}>
@@ -319,7 +319,8 @@ const Department_List = (props: Props) => {
                                             setFilterStatus(false)
                                         }
                                     }}
-                                    renderInput={(params) => <TextField {...params} label="Active/Inactive Status" />}
+                                    renderInput={(params) => <TextField {...params}
+                                    InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Active/Inactive Status" />}
                                 />
                                 <Grid2 container spacing={-1} justifyContent={'space-between'} sx={{ width: '60%', height: '5vh', paddingLeft: '20%' }}>
                                     <Button variant='outlined' color='inherit' sx={{ width: '15%' }} disabled={props.user.role === 'Employee'} onClick={() => getFilteredInformation()}>
