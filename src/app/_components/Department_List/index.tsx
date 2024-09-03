@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Button, Divider, TextField, Typography } from '@mui/material'
-import Grid2 from '@mui/material/Unstable_Grid2'
+import Grid2 from '@mui/material/Grid2'
 import React, { useEffect, useState } from 'react'
 import EmployeeTable from '../Employee_List/EmployeeTable'
 import Department_Table from './Department_Table'
@@ -300,7 +300,7 @@ const Department_List = (props: Props) => {
                         </Box>
                     </div>
                     <div style={{ display: 'flex', paddingTop: '0.2vh', paddingLeft: '2%' }}>
-                        <Grid2 xs='auto' >
+                        <Grid2>
                             <Box
                                 height={'20vh'}
                                 width={'40vh'}

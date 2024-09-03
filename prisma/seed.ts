@@ -23,7 +23,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Steven",
         lastName: "Johnson",
-        telephoneNumber: '+2712-345-6789',
+        telephoneNumber: '+2712 345-6789',
         emailAddress: 'stevejohnson@gmail.com',
         password: "Password123#",
         status: true,
@@ -32,7 +32,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Jack",
         lastName: "Johnson",
-        telephoneNumber: '+2712-345-6789',
+        telephoneNumber: '+2712 345-6789',
         emailAddress: 'jackjohnson@gmail.com',
         password: "Password123#",
         status: true,
@@ -41,7 +41,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Steward",
         lastName: "Jack",
-        telephoneNumber: '+2712-479-9876',
+        telephoneNumber: '+2712 479-9876',
         emailAddress: 'stewardjack@gmail.com',
         password: "Password123#",
         status: false,
@@ -50,7 +50,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Steven",
         lastName: "Jack",
-        telephoneNumber: '+2712-497-9876',
+        telephoneNumber: '+2712 497-9876',
         emailAddress: 'stevenjack@gmail.com',
         password: "Password123#",
         status: true,
@@ -59,7 +59,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Peter",
         lastName: "Rock",
-        telephoneNumber: '+2712-842-9876',
+        telephoneNumber: '+2712 842-9876',
         emailAddress: 'peterrock@gmail.com',
         password: "Password123#",
         status: false,
@@ -68,7 +68,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Jacky",
         lastName: "Chan",
-        telephoneNumber: '+2712-986-9876',
+        telephoneNumber: '+2712 986-9876',
         emailAddress: 'realjackychan@gmail.com',
         password: "Password123#",
         status: false,
@@ -77,7 +77,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Steven",
         lastName: "Jackson",
-        telephoneNumber: '+2712-345-6789',
+        telephoneNumber: '+2712 345-6789',
         emailAddress: 'stevejackson@gmail.com',
         password: "Password123#",
         status: true,
@@ -86,7 +86,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Jack",
         lastName: "Jackson",
-        telephoneNumber: '+2712-345-6789',
+        telephoneNumber: '+2712 345-6789',
         emailAddress: 'jackjackson@gmail.com',
         password: "Password123#",
         status: true,
@@ -95,7 +95,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Steward",
         lastName: "Jack",
-        telephoneNumber: '+2712-479-4286',
+        telephoneNumber: '+2712 479-4286',
         emailAddress: 'stewardjack@gmail.com',
         password: "Password123#",
         status: false,
@@ -104,7 +104,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Steven",
         lastName: "Jacky",
-        telephoneNumber: '+2712-497-7482',
+        telephoneNumber: '+2712 497-7482',
         emailAddress: 'stevjacky@gmail.com',
         password: "Password123#",
         status: true,
@@ -113,7 +113,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Peter",
         lastName: "Rocky",
-        telephoneNumber: '+2712-842-2468',
+        telephoneNumber: '+2712 842-2468',
         emailAddress: 'petrocky@gmail.com',
         password: "Password123#",
         status: false,
@@ -122,7 +122,7 @@ const employeeData: CreateEmployee[] = [
     {
         firstName: "Jackson",
         lastName: "Chan",
-        telephoneNumber: '+2712-986-8462',
+        telephoneNumber: '+2712 986-8462',
         emailAddress: 'realjacksonchan@gmail.com',
         password: "Password123#",
         status: false,

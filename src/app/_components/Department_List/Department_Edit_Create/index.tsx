@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Button, Divider, TextField, Typography } from '@mui/material'
-import Grid2 from '@mui/material/Unstable_Grid2'
+import Grid2 from '@mui/material/Grid2'
 import { api } from 'ernst_stephen_fischer/trpc/react'
 import React, { useState } from 'react'
 
@@ -122,7 +122,7 @@ const Department_Edit_Create = (props: Props) => {
             </div>
             <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
                 <Grid2 container spacing={3} >
-                    <Grid2 xs='auto' >
+                    <Grid2 >
                         <Box
                             height={'11vh'}
                             width={'20vh'}
@@ -134,7 +134,7 @@ const Department_Edit_Create = (props: Props) => {
                             <Button variant='text' color='inherit' onClick={() => props.viewEmployees()} > View Employees</Button>
                         </Box>
                     </Grid2>
-                    <Grid2 xs='auto' >
+                    <Grid2>
                         <Typography sx={{ paddingBottom: '2%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '5vh' }}> Name </Typography>

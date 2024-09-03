@@ -1,5 +1,6 @@
-import { Autocomplete, Box, Button, Divider, TextField, Typography } from '@mui/material'
-import Grid2 from '@mui/material/Unstable_Grid2'
+import { Autocomplete, Box, Button, Divider, FormControl, Input, InputLabel, TextField, Typography } from '@mui/material'
+import Grid2 from '@mui/material/Grid2'
+import { IMaskInput } from 'react-imask';
 import { api } from 'ernst_stephen_fischer/trpc/react'
 import React, { useState } from 'react'
 
@@ -57,6 +58,29 @@ interface Props {
     user: Employee
 }
 
+interface CustomProps {
+    onChange: (event: { target: { name: string; value: string } }) => void;
+    name: string;
+}
+
+const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
+    function TextMaskCustom(props, ref) {
+        const { onChange, ...other } = props;
+        return (
+            <IMaskInput
+                {...other}
+                mask="+2700 000-0000"
+                definitions={{
+                    '#': /[1-9]/,
+                }}
+                inputRef={ref}
+                onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+                overwrite
+            />
+        );
+    },
+);
+
 const Employee_Edit_Create = (props: Props) => {
     const StatusOptions = ["Active", 'Inactive']
     const [firstName, setFirstName] = useState(props.employeeData.firstName)
@@ -72,33 +96,41 @@ const Employee_Edit_Create = (props: Props) => {
         }
         return "Inactive"
     }
+
     const updateEmployee = api.update.updateEmployees.useMutation()
     const createEmployee = api.insert.insertEmployees.useMutation()
     const EmployeeManagerLink = api.update.updateEmployeeManagerLink.useMutation()
     const ManagerEdit = api.update.updateManager.useMutation()
 
-    const getId=()=>{
-        if(props.edit){
+    const getId = () => {
+        if (props.edit) {
             return props.employeeData.id
         }
-        else{
+        else {
             return props.employees.length
         }
     }
+
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTelephoneNumber(
+            event.target.value,
+        );
+    };
     //this function checks that all the required data has in put in to create an employee
     const checkData = (data: Employee) => {
-        if(data.firstName===""||data.lastName===""||data.telephoneNumber===""||data.emailAddress===""){
+        if (data.firstName === "" || data.lastName === "" || data.telephoneNumber === "" || data.emailAddress === "") {
             setError(true)
         } else {
             if (props.edit) {
                 EditEmployeeDetails({ id: data.id, firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role, password: "Password123#" })
             }
             else {
-                CreateEmployee({id: data.id, firstName, lastName, telephoneNumber, emailAddress, status: false, role: 'Employee', password: "Password123#" })
-            } 
+                CreateEmployee({ id: data.id, firstName, lastName, telephoneNumber, emailAddress, status: false, role: 'Employee', password: "Password123#" })
+            }
         }
     }
-//this updates data in the database
+    //this updates data in the database
     const EditEmployeeDetails = (data: Employee) => {
         if (data.role === 'Manager') {
             ManagerEdit.mutate({ managerName: data.firstName + " " + data.lastName, oldEmail: props.employeeData.emailAddress, newEmail: data.emailAddress })
@@ -107,10 +139,10 @@ const Employee_Edit_Create = (props: Props) => {
         if (manager) {
             EmployeeManagerLink.mutate({ EmployeeId: props.employeeData.id, managerId: manager.id })
             props.addDataManager({
-                id: data.id, 
-                firstName: data.firstName, 
-                lastName: data.lastName, 
-                telephoneNumber: data.telephoneNumber, 
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                telephoneNumber: data.telephoneNumber,
                 emailAddress: data.emailAddress,
                 password: "Password123#",
                 status: data.status,
@@ -122,8 +154,8 @@ const Employee_Edit_Create = (props: Props) => {
     }
     //this insterts data into the database
     const CreateEmployee = (data: Employee) => {
-        createEmployee.mutate({firstName: data.firstName, lastName: data.lastName, telephoneNumber: data.telephoneNumber, emailAddress: data.emailAddress, password: "Password123#", status: data.status, role: "Employee"})
-        props.addData({    
+        createEmployee.mutate({ firstName: data.firstName, lastName: data.lastName, telephoneNumber: data.telephoneNumber, emailAddress: data.emailAddress, password: "Password123#", status: data.status, role: "Employee" })
+        props.addData({
             id: data.id,
             firstName: data.firstName,
             lastName: data.lastName,
@@ -134,7 +166,7 @@ const Employee_Edit_Create = (props: Props) => {
             password: "Password123#"
         })
     }
-    
+
     return (
         <div>
             <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
@@ -155,43 +187,53 @@ const Employee_Edit_Create = (props: Props) => {
             </div>
             <div style={{ display: 'flex', paddingTop: '0.1vh', paddingLeft: '2%' }}>
                 <Grid2 container spacing={3} >
-                    <Grid2 xs='auto' >
-                    <div>
-                        <Box
-                            height={'11vh'}
-                            width={'20vh'}
-                            display={'grid'}
-                            alignItems={'center'}
-                            sx={{ border: '2px solid grey' }}>
-                            <Typography sx={{ paddingLeft: '38%' }}> Menu </Typography>
-                            <Button variant='text' color='inherit' onClick={() => props.viewDepartment()}> View Departments</Button>
-                            <Button variant='text' color='inherit' onClick={() => props.exit()}> View Employee</Button>
-                        </Box>
-                    </div>
+                    <Grid2 >
+                        <div>
+                            <Box
+                                height={'11vh'}
+                                width={'20vh'}
+                                display={'grid'}
+                                alignItems={'center'}
+                                sx={{ border: '2px solid grey' }}>
+                                <Typography sx={{ paddingLeft: '38%' }}> Menu </Typography>
+                                <Button variant='text' color='inherit' onClick={() => props.viewDepartment()}> View Departments</Button>
+                                <Button variant='text' color='inherit' onClick={() => props.exit()}> View Employee</Button>
+                            </Box>
+                        </div>
                     </Grid2>
-                    <Grid2 xs='auto' sx={{width: '70vh'}}>
+                    <Grid2 sx={{ width: '70vh' }}>
                         <Typography variant='h4' sx={{ paddingBottom: '1%' }}> Create / Edit Employee </Typography>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '10vh' }} variant='h6'> First Name </Typography>
-                            <TextField value={firstName} error={error&&firstName===""} helperText={error && firstName==="" ? "Enter First Name" : ""} 
-                            onChange={(e) => setFirstName(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
+                            <TextField value={firstName} error={error && firstName === ""} helperText={error && firstName === "" ? "Enter First Name" : ""}
+                                onChange={(e) => setFirstName(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '10vh' }} variant='h6'> Last Name </Typography>
-                            <TextField value={lastName} error={error&&lastName===""} helperText={error && lastName==="" ? "Enter Last Name" : ""} 
-                            onChange={(e) => setLastName(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
+                            <TextField value={lastName} error={error && lastName === ""} helperText={error && lastName === "" ? "Enter Last Name" : ""}
+                                onChange={(e) => setLastName(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%' , paddingRight: '2.5vh'}} variant='h6'> Telephone Number </Typography>
-                            <TextField value={telephoneNumber} error={error&&telephoneNumber===""} 
-                            helperText={error && telephoneNumber==="" ? "Enter Telephone Number" : ""} 
-                            onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
+                            <Typography sx={{ padding: '5%', paddingRight: '2.5vh' }} variant='h6'> Telephone Number </Typography>
+                            <FormControl variant="standard">
+                                <Input
+                                    value={telephoneNumber}
+                                    onChange={handleChange}
+                                    name="textmask"
+                                    inputComponent={TextMaskCustom as any}
+                                />
+                            </FormControl>
+                            {/* <TextField value={telephoneNumber} error={error && telephoneNumber === ""}
+                                helperText={error && telephoneNumber === "" ? "Enter Telephone Number" : ""}
+                                onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} >
+
+                            </TextField> */}
                         </div>
                         <div style={{ display: 'flex' }}>
-                            <Typography sx={{ padding: '5%',  paddingRight: '6.7vh' }} variant='h6'> Email Address </Typography>
-                            <TextField value={emailAddress} error={error&&telephoneNumber===""} 
-                            helperText={error && firstName==="" ? "Enter Email Address" : ""} 
-                            onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
+                            <Typography sx={{ padding: '5%', paddingRight: '6.7vh' }} variant='h6'> Email Address </Typography>
+                            <TextField value={emailAddress} error={error && telephoneNumber === ""}
+                                helperText={error && firstName === "" ? "Enter Email Address" : ""}
+                                onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
                         {props.edit &&
                             <div>
@@ -200,12 +242,12 @@ const Employee_Edit_Create = (props: Props) => {
                                     <Autocomplete
                                         disablePortal
                                         options={props.manager}
-                                        disabled={props.user.role!=="HRAdmin"}
+                                        disabled={props.user.role !== "HRAdmin"}
                                         getOptionLabel={(options) => options.managerName}
                                         value={manager}
                                         sx={{ width: '40vh', paddingLeft: '13.7vh' }}
                                         renderInput={(params) => <TextField {...params}
-                                        InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Select Manager" />}
+                                            InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Select Manager" />}
                                         onChange={(e, value) => {
                                             if (value)
                                                 setManager(value)
@@ -217,7 +259,7 @@ const Employee_Edit_Create = (props: Props) => {
                                     <Autocomplete
                                         disablePortal
                                         options={StatusOptions}
-                                        disabled={props.user.role!=="HRAdmin"}
+                                        disabled={props.user.role !== "HRAdmin"}
                                         value={getStatusValue()}
                                         sx={{ width: '42vh', paddingLeft: '16vh' }}
                                         renderInput={(params) => <TextField {...params} InputProps={{ ...params.InputProps, style: { fontSize: 22 } }} label="Select Active/Inactive" />}
@@ -233,15 +275,15 @@ const Employee_Edit_Create = (props: Props) => {
                                 </div>
                             </div>
                         }
-                        <div style={{paddingTop: '2vh'}}>
-                        <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
-                            checkData({ id: getId(), firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role, password: "Password123#" })
-                        }}>
-                            save
-                        </Button>
-                        <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%', right: '-10%' }} onClick={() => props.exit()}>
-                            cancel
-                        </Button>
+                        <div style={{ paddingTop: '2vh' }}>
+                            <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%' }} onClick={() => {
+                                checkData({ id: getId(), firstName, lastName, telephoneNumber, emailAddress, status, role: props.employeeData.role, password: "Password123#" })
+                            }}>
+                                save
+                            </Button>
+                            <Button variant='outlined' color='inherit' sx={{ width: '25%', padding: '5%', right: '-10%' }} onClick={() => props.exit()}>
+                                cancel
+                            </Button>
                         </div>
                     </Grid2>
                 </Grid2>

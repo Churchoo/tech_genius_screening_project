@@ -10,6 +10,7 @@ export const updateRouter = createTRPCRouter({
   updateEmployees: publicProcedure
     .input(z.object({ id: z.number(), firstName: z.string(), lastName: z.string(), telephoneNumber: z.string(), emailAddress: z.string(), status: z.boolean(), role: z.string() }))
     .mutation(async ({ ctx, input }) => {
+       try{
       await ctx.db.employees.update({
         data: {
           id: input.id,
@@ -25,6 +26,9 @@ export const updateRouter = createTRPCRouter({
         }
       });
       return 'Success'
+    }catch(e){
+      return "Rejected"
+    }
     }),
   updateEmployeeStatus: publicProcedure
     .input(z.object({ id: z.number(), status: z.boolean() }))

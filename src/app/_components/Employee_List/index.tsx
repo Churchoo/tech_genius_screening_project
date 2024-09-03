@@ -1,6 +1,6 @@
 "use client"
 import { Autocomplete, Box, Button, Divider, TextField, Typography } from '@mui/material'
-import Grid2 from '@mui/material/Unstable_Grid2'
+import Grid2 from '@mui/material/Grid2'
 import React, { useEffect, useState } from 'react'
 import EmployeeTable from './EmployeeTable'
 import Employee_Edit_Create from './Employee_Edit_Create'
@@ -450,7 +450,7 @@ const Employee_List = (props: Props) => {
                             <Button variant='text' color='inherit' sx={{ fontSize: 20 }} onClick={() => setCreate(true)} disabled={props.user.role !== 'HRAdmin'}> Add Employee</Button>
                         </Box>
                     </div>
-                    <Grid2 xs='auto' sx={{ paddingTop: '4.5vh' }} >
+                    <Grid2 sx={{ paddingTop: '4.5vh' }} >
                         <Box
                             height={'40vh'}
                             width={'45vh'}
