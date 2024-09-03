@@ -398,7 +398,7 @@ const Employee_List = (props: Props) => {
                         id: 0,
                         firstName: "",
                         lastName: "",
-                        telephoneNumber: "",
+                        telephoneNumber: "+27",
                         emailAddress: "",
                         password: "Password123#",
                         status: false,

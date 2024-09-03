@@ -111,6 +111,13 @@ const Employee_Edit_Create = (props: Props) => {
         }
     }
 
+    const validateEmail = (mail: string) => {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
+         {
+           return true
+         }
+           return false
+       }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTelephoneNumber(
@@ -119,7 +126,8 @@ const Employee_Edit_Create = (props: Props) => {
     };
     //this function checks that all the required data has in put in to create an employee
     const checkData = (data: Employee) => {
-        if (data.firstName === "" || data.lastName === "" || data.telephoneNumber === "" || data.emailAddress === "") {
+        console.log(validateEmail(emailAddress))
+        if (data.firstName === "" || data.lastName === "" || data.telephoneNumber === "" || data.emailAddress === "" || !validateEmail(emailAddress)) {
             setError(true)
         } else {
             if (props.edit) {
@@ -215,7 +223,7 @@ const Employee_Edit_Create = (props: Props) => {
                         </div>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '2.5vh' }} variant='h6'> Telephone Number </Typography>
-                            <FormControl variant="standard">
+                            <FormControl variant="standard" sx={{paddingTop: '4vh', paddingLeft: '2.3vh'}}>
                                 <Input
                                     value={telephoneNumber}
                                     onChange={handleChange}
@@ -223,15 +231,10 @@ const Employee_Edit_Create = (props: Props) => {
                                     inputComponent={TextMaskCustom as any}
                                 />
                             </FormControl>
-                            {/* <TextField value={telephoneNumber} error={error && telephoneNumber === ""}
-                                helperText={error && telephoneNumber === "" ? "Enter Telephone Number" : ""}
-                                onChange={(e) => setTelephoneNumber(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} >
-
-                            </TextField> */}
                         </div>
                         <div style={{ display: 'flex' }}>
                             <Typography sx={{ padding: '5%', paddingRight: '6.7vh' }} variant='h6'> Email Address </Typography>
-                            <TextField value={emailAddress} error={error && telephoneNumber === ""}
+                            <TextField value={emailAddress} error={error && (emailAddress === "" || !validateEmail(emailAddress))}
                                 helperText={error && firstName === "" ? "Enter Email Address" : ""}
                                 onChange={(e) => setEmailAddress(e.target.value)} sx={{ width: '50%', padding: '3%', fontSize: 22 }} />
                         </div>
